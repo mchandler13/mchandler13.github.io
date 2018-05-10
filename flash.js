@@ -8,7 +8,7 @@ svg = d3.select("#flash")
         .style("background-color","#000000")
 
 
-svg.on("mouseclick",function(){
+svg.on("click",function(){
   x = d3.mouse(this)[0]
   y = d3.mouse(this)[1]
   var lines = d3.selectAll("line")
