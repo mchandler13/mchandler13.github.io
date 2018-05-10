@@ -11,7 +11,7 @@ svg = d3.select("#flash")
 svg.on("click",function(){
   x = d3.mouse(this)[0]
   y = d3.mouse(this)[1]
-  var lines = d3.selectAll("line")
+  var lines = svg.selectAll("line")
                   .data([1,2,3,4,5,6,7,8,9,10])
                   .enter()
                   .append("line")
