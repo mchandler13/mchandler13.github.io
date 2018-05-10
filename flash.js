@@ -9,6 +9,7 @@ svg = d3.select("#flash")
 
 
 svg.on("click",function(){
+  lines.remove()
   x = d3.mouse(this)[0]
   y = d3.mouse(this)[1]
   var lines = svg.selectAll("line")
