@@ -25,4 +25,5 @@ svg.on("click",function(){
                   .attr("y2",150)
                   .attr("stroke","yellow")
                   .attr("stroke-width",.5)
+    console.log(x,y)
 })
