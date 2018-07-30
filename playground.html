@@ -32,7 +32,7 @@
     //         con='"Conference":"'+d["Conference"]+'"},'
     //         return team_str+year_str+OU_Line+Over_Odds+Under_Odds+Actual_Wins+result1+result2+div+con
     //       })
-    data=[{"Team":"Cardinals","Year":2008,"Over/Under Line":8,"Over Odds":110,"Under Odds":-140,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
+    data_large=[{"Team":"Cardinals","Year":2008,"Over/Under Line":8,"Over Odds":110,"Under Odds":-140,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
           {"Team":"Falcons","Year":2008,"Over/Under Line":4.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":6.5,"Division":"NFC South","Conference":"NFC"},
           {"Team":"Ravens","Year":2008,"Over/Under Line":6,"Over Odds":-145,"Under Odds":115,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":5,"Division":"AFC North","Conference":"AFC"},
           {"Team":"Bills","Year":2008,"Over/Under Line":7.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC East","Conference":"AFC"},
@@ -361,15 +361,14 @@
                         "Mean Over/Under Line":Math.round(100*d3.mean(v, function(d) { return d["Over/Under Line"];}))/100,
                       }
                     })
-                    .object(data)
-
+                    .object(data_large)
           nested=d3.nest()
                     .key(function(d){return d["Team"]})
                     .key(function(v){return v["Over/Under Result"]})
                     .rollup(function(w){
                       return w.length;
                     })
-                    .object(data)
+                    .object(data_large)
           teams=Object.keys(nested)
           small_data=[]
           for (var i=0;i<teams.length;i++){
@@ -386,19 +385,8 @@
             to_add["Mean Over/Under Line"]=nested2[teams[i]]["Mean Over/Under Line"]
             small_data.push(to_add)
           }
-          // console.log(small_data)
 
-          console.log(nested2)
-          d3.select("#winTotals").append("p").text("click on team to show stats").attr("class","help").style("font-size","20px")
-          d3.select("#winTotals").append("p").text("click on table header to sort").attr("class","help").style("font-size","20px")
-          d3.select("#winTotals").append("button")
-                .attr("id","showSmallButton")
-                .text("Show Small Table")
-                .on("click",show_small)
-
-
-
-      function tabulate(data, columns, sortCol, leastToMost,condensed) {
+      function tabulate(data, columns, sortCol, leastToMost,current_table) {
         // console.log(sortCol)
 
 
@@ -465,19 +453,6 @@
     		var thead = table.append('thead')
     		var	tbody = table.append('tbody');
 
-        var t = d3.select("#winTotals")
-                  .append("p")
-                  .attr("id","showOrder")
-                  .text(function(){
-                    if (leastToMost==true){
-                      asc = "Least to Greatest"
-                    }
-                    else{
-                      asc = "Greatest to Least"
-                    }
-                    return "Sorted by "+ sortCol+", "+asc
-                  })
-
 
     		// append the header row
     		th = thead.append('tr')
@@ -520,67 +495,74 @@
           .style("padding","1px 5px")
           .style("border-top","1px solid #b7b7b7")
           .style("text-align","center")
-        if(!condensed){
+
+        if(current_table=="win totals table"){
           d3.selectAll(".Team")
             .style("color","#4523d4")
             .on("click",function(d){
-              d3.selectAll(".help").remove()
-              d3.selectAll("button").remove()
+              team=d["value"]
+              filtered=data_large.filter(function(v){return v.Team==team})
+              d3.select("table").remove()
+              console.log(filtered)
               d3.select("#winTotals").append("button")
                     .attr("id","showLargeButton")
-                    .text("Show Large Table")
-                    .on("click",show_large)
-              d3.select("#winTotals").append("button")
-                    .attr("id","showSmallButton")
-                    .text("Show Small Table")
-                    .on("click",show_small)
-              team=d["value"]
-              filtered=data.filter(function(v){return v.Team==team})
-              t.remove()
+                    .text("Back")
+                    .on("click",show_win_totals_table)
+              tabulate(filtered, cols, "Year", leastToMost,true,"one team")
+            })
+          d3.selectAll(".O_U_Push")
+            .style("color","#4523d4")
+            .on("click",function(d){
+              team=d3.select(this.parentNode).selectAll(".Team").text()
+              filtered=data_large.filter(function(v){return v.Team==team})
               d3.select("table").remove()
+              d3.select("#winTotals").append("button")
+                    .attr("id","showLargeButton")
+                    .text("Back")
+                    .on("click",show_win_totals_table)
               make_graph(team,filtered)
             })
+          }
 
-            th.on("mouseenter",function(){
-              thead.style("cursor","pointer")
-            })
-            .on("click",function(d){
-              d3.select("table").remove()
-              t.remove()
-              sortBy = d3.select(this).text()
-              console.log("sort by: "+sortBy)
-              console.log("sort col: "+sortCol)
-              if (sortBy==sortCol){
-                if(leastToMost==true){
-                  leastToMost=false
-                  console.log(leastToMost)
-                }
-                else{
-                  leastToMost=true
-                  console.log(leastToMost)
-                }
-
-                tabulate(data, cols, sortBy, leastToMost)
+          th.on("mouseenter",function(){
+            thead.style("cursor","pointer")
+          })
+          .on("click",function(d){
+            d3.select("table").remove()
+            sortBy = d3.select(this).text()
+            console.log("sort by: "+sortBy)
+            console.log("sort col: "+sortCol)
+            if (sortBy==sortCol){
+              if(leastToMost==true){
+                leastToMost=false
+                console.log(leastToMost)
               }
               else{
+                leastToMost=true
                 console.log(leastToMost)
-                tabulate(data, cols, sortBy, leastToMost)
               }
 
-            })
-          }
+              tabulate(data, cols, sortBy, leastToMost)
+            }
+            else{
+              console.log(leastToMost)
+              tabulate(data, cols, sortBy, leastToMost)
+            }
+
+          })
+
 
         cells.on("mouseover",function(d){
             d3.select(this.parentNode).selectAll("td").style("background-color","#c9e9c9") // Change background-color of row to yellow
             d3.selectAll("."+d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_")).style("background-color","#c9e9c9") //Change background-color of column to yellow
             d3.select(this).style("background-color","lightblue")
-            if(d3.select(this).attr("class")=="Team"&&!condensed){
+            if((d3.select(this).attr("class")=="Team"||d3.select(this).attr("class")=="O_U_Push")&&current_table=="win totals table"){
               d3.select(this).style("cursor","pointer").style("text-decoration","underline")
             }
           })
           .on("mouseleave",function(d){
             d3.selectAll("td").style("background-color","white")
-            if(d3.select(this).attr("class")=="Team"){
+            if((d3.select(this).attr("class")=="Team"||d3.select(this).attr("class"))&&current_table=="win totals table"){
               d3.select(this).style("text-decoration","none")
             }
           })
@@ -590,37 +572,19 @@
     	}
 
     	// render the table(s)
-      cols = ["Year","Team","Over/Under Line","Over Odds","Under Odds","Actual Wins","Over/Under Result","Division","Conference"]
+      cols = ["Year","Team","Over/Under Line","Over Odds","Under Odds","Actual Wins","Over/Under Result"]
       // cols = ["Year","Team","Over/Under Line"]
-    	tabulate(data, cols, "Year",false);
-    	// tabulate(small_data, Object.keys(small_data[0]), "Team",false);
-      function show_small(){
-        d3.selectAll("button").remove()
+    	// tabulate(data, cols, "Year",false);
+    	tabulate(small_data, Object.keys(small_data[0]), "Team",false,"win totals table");
+
+      function show_win_totals_table(){
         d3.selectAll(".help").remove()
-        d3.select("#winTotals").append("button")
-              .attr("id","showLargeButton")
-              .text("Show Large Table")
-              .on("click",show_large)
+        d3.selectAll("button").remove()
         d3.selectAll("table").remove()
         d3.select("#showOrder").remove()
         d3.select("#svg1").remove()
         d3.select("#svg2").remove()
-        tabulate(small_data, Object.keys(small_data[0]), "Team",false,true);
-      }
-      function show_large(){
-        d3.selectAll(".help").remove()
-        d3.select("#winTotals").append("p").text("click on team to show stats").attr("class","help").style("font-size","20px")
-        d3.select("#winTotals").append("p").text("click on table header to sort").attr("class","help").style("font-size","20px")
-        d3.selectAll("button").remove()
-        d3.select("#winTotals").append("button")
-              .attr("id","showSmallButton")
-              .text("Show Small Table")
-              .on("click",show_small)
-        d3.selectAll("table").remove()
-        d3.select("#showOrder").remove()
-        d3.select("#svg1").remove()
-        d3.select("#svg2").remove()
-        tabulate(data, cols, "Year",false,false);
+        tabulate(small_data, Object.keys(small_data[0]), "Team",false,"win totals table");
       }
 
 
@@ -640,7 +604,6 @@
             .attr("height",height)
             .style("display","block")
             .style("margin-bottom",20)
-            .style("background-color","#eeeeee")
         var xscale = d3.scaleLinear()
            .domain([2007,2018])
            .range([marginL, width-marginR]);
@@ -832,7 +795,6 @@
             .attr("id","svg2")
             .attr("width",width)
             .attr("height",height)
-            .style("background-color","#eeeeee")
         var xscale2 = d3.scaleLinear()
            .domain([2007,2018])
            .range([marginL, width-marginR]);
