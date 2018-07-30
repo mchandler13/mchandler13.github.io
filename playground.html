@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Odds Table</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+
+  <body>
+    <div id="winTotals">
+    </div>
+  </body>
+  <script>
+
+    // d3.csv("data/Win_Total_Results.csv",function(error,data){
+    // d3.csv("data/small1.csv",function(error,data){
+    // d3.select("#winTotals").selectAll(".toData")
+    //       .data(data)
+    //       .enter()
+    //       .append("p")
+    //       .attr("class","toData")
+    //       .text(function(d){
+    //         team_str='{"Team":"'+d["Team"]+'",'
+    //         year_str='"Year":'+d["Year"]+','
+    //         OU_Line='"Over/Under Line":'+d["Over/Under Line"]+','
+    //         Over_Odds='"Over Odds":'+d["Over Odds"]+','
+    //         Under_Odds='"Under Odds":'+d["Under Odds"]+','
+    //         Actual_Wins='"Actual Wins":'+d["Actual Wins"]+','
+    //         result1='"Over/Under Result":"'+d["Over/Under Result"]+'",'
+    //         result2='"Over/Under Number":'+(d["Actual Wins"]-d["Over/Under Line"])+','
+    //         div='"Division":"'+d["Division"]+'",'
+    //         con='"Conference":"'+d["Conference"]+'"},'
+    //         return team_str+year_str+OU_Line+Over_Odds+Under_Odds+Actual_Wins+result1+result2+div+con
+    //       })
+    data=[{"Team":"Cardinals","Year":2008,"Over/Under Line":8,"Over Odds":110,"Under Odds":-140,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2008,"Over/Under Line":4.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":6.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2008,"Over/Under Line":6,"Over Odds":-145,"Under Odds":115,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2008,"Over/Under Line":7.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2008,"Over/Under Line":7.5,"Over Odds":-170,"Under Odds":140,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2008,"Over/Under Line":8,"Over Odds":130,"Under Odds":-160,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2008,"Over/Under Line":7.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2008,"Over/Under Line":8,"Over Odds":-125,"Under Odds":-105,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-4,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2008,"Over/Under Line":10.5,"Over Odds":-135,"Under Odds":105,"Actual Wins":9,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2008,"Over/Under Line":7.5,"Over Odds":-175,"Under Odds":145,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2008,"Over/Under Line":6.5,"Over Odds":-120,"Under Odds":-110,"Actual Wins":0,"Over/Under Result":"U","Over/Under Number":-6.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2008,"Over/Under Line":8,"Over Odds":-135,"Under Odds":105,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2008,"Over/Under Line":7.5,"Over Odds":-135,"Under Odds":105,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2008,"Over/Under Line":11,"Over Odds":115,"Under Odds":-145,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2008,"Over/Under Line":10,"Over Odds":-120,"Under Odds":-110,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2008,"Over/Under Line":6,"Over Odds":-110,"Under Odds":-120,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-4,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2008,"Over/Under Line":5.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":5.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2008,"Over/Under Line":8.5,"Over Odds":-155,"Under Odds":125,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2008,"Over/Under Line":12.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":11,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2008,"Over/Under Line":8.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2008,"Over/Under Line":8.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2008,"Over/Under Line":8,"Over Odds":-155,"Under Odds":125,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2008,"Over/Under Line":6,"Over Odds":-120,"Under Odds":-110,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2008,"Over/Under Line":8.5,"Over Odds":-180,"Under Odds":150,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2008,"Over/Under Line":9,"Over Odds":-115,"Under Odds":-115,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":3,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Rams","Year":2008,"Over/Under Line":6.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Chargers","Year":2008,"Over/Under Line":10.5,"Over Odds":-170,"Under Odds":140,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2008,"Over/Under Line":6.5,"Over Odds":110,"Under Odds":-140,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2008,"Over/Under Line":8.5,"Over Odds":-170,"Under Odds":140,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2008,"Over/Under Line":8,"Over Odds":-150,"Under Odds":120,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2008,"Over/Under Line":8,"Over Odds":-115,"Under Odds":-115,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2008,"Over/Under Line":7.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2009,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2009,"Over/Under Line":8.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2009,"Over/Under Line":8.5,"Over Odds":-190,"Under Odds":155,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2009,"Over/Under Line":7.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2009,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2009,"Over/Under Line":8.5,"Over Odds":-180,"Under Odds":150,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2009,"Over/Under Line":6.5,"Over Odds":-155,"Under Odds":125,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2009,"Over/Under Line":7,"Over Odds":175,"Under Odds":-215,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2009,"Over/Under Line":9,"Over Odds":-140,"Under Odds":110,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2009,"Over/Under Line":7,"Over Odds":165,"Under Odds":-205,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2009,"Over/Under Line":4.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2009,"Over/Under Line":8.5,"Over Odds":-200,"Under Odds":160,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2009,"Over/Under Line":8,"Over Odds":-165,"Under Odds":135,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2009,"Over/Under Line":10,"Over Odds":-150,"Under Odds":120,"Actual Wins":14,"Over/Under Result":"O","Over/Under Number":4,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2009,"Over/Under Line":8,"Over Odds":-140,"Under Odds":110,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2009,"Over/Under Line":6,"Over Odds":100,"Under Odds":-130,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2009,"Over/Under Line":7,"Over Odds":-140,"Under Odds":110,"Actual Wins":7,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2009,"Over/Under Line":9.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2009,"Over/Under Line":11.5,"Over Odds":-160,"Under Odds":130,"Actual Wins":10,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2009,"Over/Under Line":9,"Over Odds":-140,"Under Odds":110,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":4,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2009,"Over/Under Line":10,"Over Odds":-130,"Under Odds":100,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2009,"Over/Under Line":7,"Over Odds":-145,"Under Odds":115,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":2,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2009,"Over/Under Line":5.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2009,"Over/Under Line":9.5,"Over Odds":-160,"Under Odds":130,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2009,"Over/Under Line":10.5,"Over Odds":-155,"Under Odds":125,"Actual Wins":9,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Chargers","Year":2009,"Over/Under Line":9.5,"Over Odds":-275,"Under Odds":215,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2009,"Over/Under Line":7,"Over Odds":-150,"Under Odds":120,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2009,"Over/Under Line":8,"Over Odds":-175,"Under Odds":145,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-3,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Rams","Year":2009,"Over/Under Line":5.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":1,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2009,"Over/Under Line":6.5,"Over Odds":165,"Under Odds":-205,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2009,"Over/Under Line":9,"Over Odds":-135,"Under Odds":105,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2009,"Over/Under Line":8,"Over Odds":100,"Under Odds":-130,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-4,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2010,"Over/Under Line":7.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2010,"Over/Under Line":9,"Over Odds":-190,"Under Odds":155,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":4,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2010,"Over/Under Line":10,"Over Odds":100,"Under Odds":-130,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":2,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2010,"Over/Under Line":5,"Over Odds":-110,"Under Odds":-120,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2010,"Over/Under Line":7,"Over Odds":110,"Under Odds":-140,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2010,"Over/Under Line":8,"Over Odds":105,"Under Odds":-135,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":3,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2010,"Over/Under Line":8,"Over Odds":-145,"Under Odds":115,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-4,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2010,"Over/Under Line":5.5,"Over Odds":-125,"Under Odds":-105,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2010,"Over/Under Line":10,"Over Odds":-140,"Under Odds":110,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-4,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2010,"Over/Under Line":7.5,"Over Odds":135,"Under Odds":-165,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2010,"Over/Under Line":5,"Over Odds":-130,"Under Odds":100,"Actual Wins":6,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2010,"Over/Under Line":9.5,"Over Odds":-160,"Under Odds":130,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2010,"Over/Under Line":8.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2010,"Over/Under Line":10.5,"Over Odds":-135,"Under Odds":105,"Actual Wins":10,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2010,"Over/Under Line":7,"Over Odds":-105,"Under Odds":-125,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2010,"Over/Under Line":6.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2010,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2010,"Over/Under Line":9.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2010,"Over/Under Line":9.5,"Over Odds":-135,"Under Odds":105,"Actual Wins":14,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2010,"Over/Under Line":10.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2010,"Over/Under Line":8.5,"Over Odds":-170,"Under Odds":140,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2010,"Over/Under Line":9.5,"Over Odds":-120,"Under Odds":-110,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2010,"Over/Under Line":6,"Over Odds":-180,"Under Odds":150,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2010,"Over/Under Line":8.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2010,"Over/Under Line":8.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Chargers","Year":2010,"Over/Under Line":10.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":9,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2010,"Over/Under Line":8.5,"Over Odds":-190,"Under Odds":155,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2010,"Over/Under Line":7.5,"Over Odds":155,"Under Odds":-190,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Rams","Year":2010,"Over/Under Line":5,"Over Odds":140,"Under Odds":-170,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":2,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2010,"Over/Under Line":5.5,"Over Odds":-135,"Under Odds":105,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2010,"Over/Under Line":8.5,"Over Odds":115,"Under Odds":-145,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2010,"Over/Under Line":7.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2011,"Over/Under Line":6.5,"Over Odds":-225,"Under Odds":185,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2011,"Over/Under Line":10.5,"Over Odds":135,"Under Odds":-165,"Actual Wins":10,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2011,"Over/Under Line":10.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2011,"Over/Under Line":5.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":6,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2011,"Over/Under Line":4.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":6,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2011,"Over/Under Line":8.5,"Over Odds":150,"Under Odds":-180,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2011,"Over/Under Line":5.5,"Over Odds":130,"Under Odds":-160,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2011,"Over/Under Line":6.5,"Over Odds":-165,"Under Odds":135,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2011,"Over/Under Line":9,"Over Odds":100,"Under Odds":-130,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2011,"Over/Under Line":6,"Over Odds":-130,"Under Odds":100,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2011,"Over/Under Line":7.5,"Over Odds":-210,"Under Odds":170,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2011,"Over/Under Line":11.5,"Over Odds":125,"Under Odds":-155,"Actual Wins":15,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2011,"Over/Under Line":"OTB","Over Odds":"OTB","Under Odds":"OTB","Actual Wins":10,"Over/Under Result":"Push","Over/Under Number":NaN,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2011,"Over/Under Line":"OTB","Over Odds":"OTB","Under Odds":"OTB","Actual Wins":2,"Over/Under Result":"Push","Over/Under Number":NaN,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2011,"Over/Under Line":"OTB","Over Odds":"OTB","Under Odds":"OTB","Actual Wins":5,"Over/Under Result":"Push","Over/Under Number":NaN,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2011,"Over/Under Line":"OTB","Over Odds":"OTB","Under Odds":"OTB","Actual Wins":7,"Over/Under Result":"Push","Over/Under Number":NaN,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2011,"Over/Under Line":7.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2011,"Over/Under Line":7,"Over Odds":-115,"Under Odds":-115,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-4,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2011,"Over/Under Line":11.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2011,"Over/Under Line":10,"Over Odds":-155,"Under Odds":125,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":3,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2011,"Over/Under Line":9.5,"Over Odds":145,"Under Odds":-175,"Actual Wins":9,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2011,"Over/Under Line":10,"Over Odds":100,"Under Odds":-130,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2011,"Over/Under Line":6.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2011,"Over/Under Line":10.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2011,"Over/Under Line":10.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Chargers","Year":2011,"Over/Under Line":10,"Over Odds":-200,"Under Odds":160,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2011,"Over/Under Line":7.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":5.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2011,"Over/Under Line":6.5,"Over Odds":165,"Under Odds":-205,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Rams","Year":2011,"Over/Under Line":7.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-5.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2011,"Over/Under Line":8,"Over Odds":120,"Under Odds":-150,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-4,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2011,"Over/Under Line":6.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2011,"Over/Under Line":6.5,"Over Odds":145,"Under Odds":-175,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2012,"Over/Under Line":7,"Over Odds":120,"Under Odds":-150,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-2,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2012,"Over/Under Line":9,"Over Odds":-150,"Under Odds":120,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":4,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2012,"Over/Under Line":10,"Over Odds":100,"Under Odds":-130,"Actual Wins":10,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2012,"Over/Under Line":8,"Over Odds":100,"Under Odds":-130,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2012,"Over/Under Line":7.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2012,"Over/Under Line":9.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2012,"Over/Under Line":8,"Over Odds":-130,"Under Odds":100,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":2,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2012,"Over/Under Line":5,"Over Odds":-130,"Under Odds":100,"Actual Wins":5,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2012,"Over/Under Line":8.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2012,"Over/Under Line":9,"Over Odds":-130,"Under Odds":100,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":4,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2012,"Over/Under Line":9,"Over Odds":-130,"Under Odds":100,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2012,"Over/Under Line":12,"Over Odds":-115,"Under Odds":-115,"Actual Wins":11,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2012,"Over/Under Line":10,"Over Odds":-130,"Under Odds":100,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":2,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2012,"Over/Under Line":5,"Over Odds":-130,"Under Odds":100,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":6,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2012,"Over/Under Line":5,"Over Odds":-130,"Under Odds":100,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-3,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2012,"Over/Under Line":8,"Over Odds":-115,"Under Odds":-115,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-6,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2012,"Over/Under Line":7,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2012,"Over/Under Line":5.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2012,"Over/Under Line":12,"Over Odds":-115,"Under Odds":-115,"Actual Wins":12,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2012,"Over/Under Line":10,"Over Odds":120,"Under Odds":-150,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-3,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2012,"Over/Under Line":9,"Over Odds":-115,"Under Odds":-115,"Actual Wins":9,"Over/Under Result":"Push","Over/Under Number":0,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2012,"Over/Under Line":8.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2012,"Over/Under Line":7,"Over Odds":100,"Under Odds":-130,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-3,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2012,"Over/Under Line":10.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-6.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2012,"Over/Under Line":10,"Over Odds":-115,"Under Odds":-115,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Chargers","Year":2012,"Over/Under Line":9,"Over Odds":-115,"Under Odds":-115,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2012,"Over/Under Line":10,"Over Odds":100,"Under Odds":-130,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2012,"Over/Under Line":7,"Over Odds":-150,"Under Odds":120,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":4,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Rams","Year":2012,"Over/Under Line":6,"Over Odds":-115,"Under Odds":-115,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2012,"Over/Under Line":6,"Over Odds":-130,"Under Odds":100,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2012,"Over/Under Line":7,"Over Odds":-150,"Under Odds":120,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2012,"Over/Under Line":6.5,"Over Odds":110,"Under Odds":-140,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2013,"Over/Under Line":5.5,"Over Odds":-160,"Under Odds":130,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2013,"Over/Under Line":10,"Over Odds":120,"Under Odds":-150,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-6,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2013,"Over/Under Line":8.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2013,"Over/Under Line":6.5,"Over Odds":125,"Under Odds":-155,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2013,"Over/Under Line":7,"Over Odds":-180,"Under Odds":150,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2013,"Over/Under Line":8.5,"Over Odds":-145,"Under Odds":115,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2013,"Over/Under Line":8.5,"Over Odds":-175,"Under Odds":145,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2013,"Over/Under Line":6,"Over Odds":-175,"Under Odds":145,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2013,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2013,"Over/Under Line":11.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2013,"Over/Under Line":8,"Over Odds":-130,"Under Odds":100,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2013,"Over/Under Line":10.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2013,"Over/Under Line":10.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-8.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2013,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2013,"Over/Under Line":5,"Over Odds":100,"Under Odds":-130,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2013,"Over/Under Line":7.5,"Over Odds":-155,"Under Odds":125,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2013,"Over/Under Line":8,"Over Odds":110,"Under Odds":-140,"Actual Wins":8,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2013,"Over/Under Line":7.5,"Over Odds":150,"Under Odds":-180,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2013,"Over/Under Line":11,"Over Odds":110,"Under Odds":-140,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2013,"Over/Under Line":9,"Over Odds":-150,"Under Odds":120,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2013,"Over/Under Line":9,"Over Odds":120,"Under Odds":-150,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-2,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2013,"Over/Under Line":6.5,"Over Odds":160,"Under Odds":-200,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2013,"Over/Under Line":5.5,"Over Odds":175,"Under Odds":-215,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2013,"Over/Under Line":7.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2013,"Over/Under Line":9,"Over Odds":-115,"Under Odds":-115,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Chargers","Year":2013,"Over/Under Line":7.5,"Over Odds":110,"Under Odds":-140,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2013,"Over/Under Line":11,"Over Odds":110,"Under Odds":-140,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2013,"Over/Under Line":10.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Rams","Year":2013,"Over/Under Line":7.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2013,"Over/Under Line":7.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2013,"Over/Under Line":6.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2013,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-5.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2014,"Over/Under Line":7.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2014,"Over/Under Line":8.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2014,"Over/Under Line":8.5,"Over Odds":-125,"Under Odds":-105,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2014,"Over/Under Line":6.5,"Over Odds":-155,"Under Odds":125,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2014,"Over/Under Line":8.5,"Over Odds":135,"Under Odds":-165,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2014,"Over/Under Line":8.5,"Over Odds":-165,"Under Odds":135,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2014,"Over/Under Line":9,"Over Odds":-115,"Under Odds":-115,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2014,"Over/Under Line":6.5,"Over Odds":-135,"Under Odds":105,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2014,"Over/Under Line":7.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2014,"Over/Under Line":11.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2014,"Over/Under Line":8.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2014,"Over/Under Line":10.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2014,"Over/Under Line":7.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2014,"Over/Under Line":9.5,"Over Odds":-125,"Under Odds":-105,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2014,"Over/Under Line":5,"Over Odds":-135,"Under Odds":105,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2014,"Over/Under Line":8,"Over Odds":-105,"Under Odds":-125,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2014,"Over/Under Line":7.5,"Over Odds":-105,"Under Odds":-125,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2014,"Over/Under Line":6,"Over Odds":-140,"Under Odds":110,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2014,"Over/Under Line":11,"Over Odds":-115,"Under Odds":-115,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2014,"Over/Under Line":10,"Over Odds":-125,"Under Odds":-105,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-3,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2014,"Over/Under Line":8,"Over Odds":-130,"Under Odds":100,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2014,"Over/Under Line":7,"Over Odds":-135,"Under Odds":105,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-3,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2014,"Over/Under Line":5,"Over Odds":-130,"Under Odds":100,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2014,"Over/Under Line":9,"Over Odds":-140,"Under Odds":110,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2014,"Over/Under Line":8.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Chargers","Year":2014,"Over/Under Line":8,"Over Odds":-150,"Under Odds":120,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2014,"Over/Under Line":10.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2014,"Over/Under Line":11,"Over Odds":-115,"Under Odds":-115,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Rams","Year":2014,"Over/Under Line":7.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2014,"Over/Under Line":7,"Over Odds":-135,"Under Odds":105,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2014,"Over/Under Line":7,"Over Odds":-105,"Under Odds":-125,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2014,"Over/Under Line":7.5,"Over Odds":-125,"Under Odds":-105,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2015,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2015,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2015,"Over/Under Line":9,"Over Odds":-115,"Under Odds":-115,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-4,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2015,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2015,"Over/Under Line":8.5,"Over Odds":110,"Under Odds":-140,"Actual Wins":15,"Over/Under Result":"O","Over/Under Number":6.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2015,"Over/Under Line":7,"Over Odds":120,"Under Odds":-150,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2015,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2015,"Over/Under Line":6.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2015,"Over/Under Line":9.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-5.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2015,"Over/Under Line":10,"Over Odds":-130,"Under Odds":100,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2015,"Over/Under Line":8,"Over Odds":-130,"Under Odds":100,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2015,"Over/Under Line":11,"Over Odds":100,"Under Odds":-130,"Actual Wins":10,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2015,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2015,"Over/Under Line":11,"Over Odds":-130,"Under Odds":100,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-3,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2015,"Over/Under Line":5.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2015,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Dolphins","Year":2015,"Over/Under Line":8.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2015,"Over/Under Line":7.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2015,"Over/Under Line":10.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2015,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2015,"Over/Under Line":8.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2015,"Over/Under Line":7.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2015,"Over/Under Line":5.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2015,"Over/Under Line":9.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2015,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Chargers","Year":2015,"Over/Under Line":8,"Over Odds":-130,"Under Odds":100,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-4,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2015,"Over/Under Line":7.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2015,"Over/Under Line":11,"Over Odds":-130,"Under Odds":100,"Actual Wins":10,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Rams","Year":2015,"Over/Under Line":8,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2015,"Over/Under Line":6,"Over Odds":100,"Under Odds":-130,"Actual Wins":6,"Over/Under Result":"Push","Over/Under Number":0,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2015,"Over/Under Line":5.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2015,"Over/Under Line":6.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Panthers","Year":2016,"Over/Under Line":10.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Packers","Year":2016,"Over/Under Line":10.5,"Over Odds":-165,"Under Odds":135,"Actual Wins":10,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2016,"Over/Under Line":10.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":14,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Steelers","Year":2016,"Over/Under Line":10.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Seahawks","Year":2016,"Over/Under Line":10.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":10,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Cardinals","Year":2016,"Over/Under Line":9.5,"Over Odds":-160,"Under Odds":130,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-2.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Bengals","Year":2016,"Over/Under Line":9.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2016,"Over/Under Line":9.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Colts","Year":2016,"Over/Under Line":9.5,"Over Odds":110,"Under Odds":-140,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2016,"Over/Under Line":9.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Vikings","Year":2016,"Over/Under Line":9.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Broncos","Year":2016,"Over/Under Line":9,"Over Odds":-115,"Under Odds":-115,"Actual Wins":9,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Ravens","Year":2016,"Over/Under Line":8.5,"Over Odds":110,"Under Odds":-140,"Actual Wins":8,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Texans","Year":2016,"Over/Under Line":8.5,"Over Odds":-135,"Under Odds":105,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Raiders","Year":2016,"Over/Under Line":8.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":12,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Bills","Year":2016,"Over/Under Line":8,"Over Odds":-115,"Under Odds":-115,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Giants","Year":2016,"Over/Under Line":8,"Over Odds":-160,"Under Odds":130,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":3,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2016,"Over/Under Line":8,"Over Odds":100,"Under Odds":-130,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-3,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Falcons","Year":2016,"Over/Under Line":7.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2016,"Over/Under Line":7.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Jaguars","Year":2016,"Over/Under Line":7.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Rams","Year":2016,"Over/Under Line":7.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2016,"Over/Under Line":7.5,"Over Odds":120,"Under Odds":-150,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Redskins","Year":2016,"Over/Under Line":7.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":8,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Lions","Year":2016,"Over/Under Line":7,"Over Odds":-130,"Under Odds":100,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":2,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Dolphins","Year":2016,"Over/Under Line":7,"Over Odds":-115,"Under Odds":-115,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":3,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2016,"Over/Under Line":7,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"Push","Over/Under Number":0,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Eagles","Year":2016,"Over/Under Line":7,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"Push","Over/Under Number":0,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Chargers","Year":2016,"Over/Under Line":7,"Over Odds":105,"Under Odds":-135,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-2,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"49ers","Year":2016,"Over/Under Line":5.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":2,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Titans","Year":2016,"Over/Under Line":5.5,"Over Odds":-160,"Under Odds":130,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":3.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Browns","Year":2016,"Over/Under Line":4.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":1,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cardinals","Year":2017,"Over/Under Line":8,"Over Odds":100,"Under Odds":-130,"Actual Wins":8,"Over/Under Result":"Push","Over/Under Number":0,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Falcons","Year":2017,"Over/Under Line":9.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Ravens","Year":2017,"Over/Under Line":9,"Over Odds":100,"Under Odds":-130,"Actual Wins":9,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Bills","Year":2017,"Over/Under Line":6,"Over Odds":-130,"Under Odds":100,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":3,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Panthers","Year":2017,"Over/Under Line":8.5,"Over Odds":-140,"Under Odds":110,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Bears","Year":2017,"Over/Under Line":5.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Bengals","Year":2017,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Browns","Year":2017,"Over/Under Line":4.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":0,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"Cowboys","Year":2017,"Over/Under Line":9.5,"Over Odds":-150,"Under Odds":120,"Actual Wins":9,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Broncos","Year":2017,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Lions","Year":2017,"Over/Under Line":8,"Over Odds":100,"Under Odds":-130,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Packers","Year":2017,"Over/Under Line":10,"Over Odds":-130,"Under Odds":100,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-3,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Texans","Year":2017,"Over/Under Line":8.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-4.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Colts","Year":2017,"Over/Under Line":9,"Over Odds":100,"Under Odds":-130,"Actual Wins":4,"Over/Under Result":"U","Over/Under Number":-5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Jaguars","Year":2017,"Over/Under Line":6,"Over Odds":-130,"Under Odds":100,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":4,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Chiefs","Year":2017,"Over/Under Line":9,"Over Odds":100,"Under Odds":-130,"Actual Wins":10,"Over/Under Result":"O","Over/Under Number":1,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Chargers","Year":2017,"Over/Under Line":7.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Rams","Year":2017,"Over/Under Line":5.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":5.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Dolphins","Year":2017,"Over/Under Line":7.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Vikings","Year":2017,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":4.5,"Division":"NFC North","Conference":"NFC"},
+          {"Team":"Patriots","Year":2017,"Over/Under Line":12.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Saints","Year":2017,"Over/Under Line":8,"Over Odds":-130,"Under Odds":100,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":3,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Giants","Year":2017,"Over/Under Line":9,"Over Odds":100,"Under Odds":-130,"Actual Wins":3,"Over/Under Result":"U","Over/Under Number":-6,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Jets","Year":2017,"Over/Under Line":5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":5,"Over/Under Result":"Push","Over/Under Number":0,"Division":"AFC East","Conference":"AFC"},
+          {"Team":"Raiders","Year":2017,"Over/Under Line":10,"Over Odds":-130,"Under Odds":100,"Actual Wins":6,"Over/Under Result":"U","Over/Under Number":-4,"Division":"AFC West","Conference":"AFC"},
+          {"Team":"Eagles","Year":2017,"Over/Under Line":8,"Over Odds":-130,"Under Odds":100,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":5,"Division":"NFC East","Conference":"NFC"},
+          {"Team":"Steelers","Year":2017,"Over/Under Line":10.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":13,"Over/Under Result":"O","Over/Under Number":2.5,"Division":"AFC North","Conference":"AFC"},
+          {"Team":"49ers","Year":2017,"Over/Under Line":4.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":6,"Over/Under Result":"O","Over/Under Number":1.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Seahawks","Year":2017,"Over/Under Line":10.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":9,"Over/Under Result":"U","Over/Under Number":-1.5,"Division":"NFC West","Conference":"NFC"},
+          {"Team":"Buccaneers","Year":2017,"Over/Under Line":8.5,"Over Odds":100,"Under Odds":-130,"Actual Wins":5,"Over/Under Result":"U","Over/Under Number":-3.5,"Division":"NFC South","Conference":"NFC"},
+          {"Team":"Titans","Year":2017,"Over/Under Line":8.5,"Over Odds":-115,"Under Odds":-115,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":0.5,"Division":"AFC South","Conference":"AFC"},
+          {"Team":"Redskins","Year":2017,"Over/Under Line":7.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":7,"Over/Under Result":"U","Over/Under Number":-0.5,"Division":"NFC East","Conference":"NFC"}]
+
+          nested2=d3.nest()
+                    .key(function(d){return d["Team"]})
+                    .rollup(function(v){
+                      return {
+                        "Mean Wins":d3.mean(v, function(d) { return d["Actual Wins"];}),
+                        "Mean Over/Under Line":Math.round(100*d3.mean(v, function(d) { return d["Over/Under Line"];}))/100,
+                      }
+                    })
+                    .object(data)
+
+          nested=d3.nest()
+                    .key(function(d){return d["Team"]})
+                    .key(function(v){return v["Over/Under Result"]})
+                    .rollup(function(w){
+                      return w.length;
+                    })
+                    .object(data)
+          teams=Object.keys(nested)
+          small_data=[]
+          for (var i=0;i<teams.length;i++){
+            to_add={"Team":teams[i]}
+            if(Object.keys(nested[teams[i]]).includes("Push")){
+              s=nested[teams[i]]["O"]+"-"+nested[teams[i]]["U"]+"-"+nested[teams[i]]["Push"]
+              to_add["O/U/Push"]=s
+            }
+            else{
+              s=nested[teams[i]]["O"]+"-"+nested[teams[i]]["U"]+"-0"
+              to_add["O/U/Push"]=s
+            }
+            to_add["Mean Wins"]=nested2[teams[i]]["Mean Wins"]
+            to_add["Mean Over/Under Line"]=nested2[teams[i]]["Mean Over/Under Line"]
+            small_data.push(to_add)
+          }
+          // console.log(small_data)
+
+          console.log(nested2)
+          d3.select("#winTotals").append("p").text("click on team to show stats").attr("class","help").style("font-size","20px")
+          d3.select("#winTotals").append("p").text("click on table header to sort").attr("class","help").style("font-size","20px")
+          d3.select("#winTotals").append("button")
+                .attr("id","showSmallButton")
+                .text("Show Small Table")
+                .on("click",show_small)
+
+
+
+      function tabulate(data, columns, sortCol, leastToMost,condensed) {
+        // console.log(sortCol)
+
+
+        string_data = data.filter(function(d){return d["Over Odds"] == "OTB";})
+        num_data = data.filter(function(d){return d["Over Odds"] != "OTB";})
+        // console.log(arr)
+
+
+
+
+
+        // console.log(sortCol)
+        if (leastToMost==true){
+          console.log("Greatest To Least")
+          if (["Over/Under Line","Over Odds","Under Odds"].includes(sortCol)){
+            console.log("first executed")
+            num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])  })
+            data=string_data.concat(num_data)
+
+          }
+          else if(["Year","Actual Wins"].includes(sortCol)){
+            console.log("second executed")
+            num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])||+a["Over/Under Line"] - +b["Over/Under Line"]})
+            data=num_data.concat(string_data)
+          }
+          else{
+            console.log("third executed")
+            data=num_data.concat(string_data)
+            data=data.sort(function(a,b) {
+              return a[sortCol].localeCompare(b[sortCol])||a["Division"].localeCompare(b["Division"])||b["Year"]-a["Year"]  ;
+            })
+          }
+
+        }
+        else{
+          console.log("Least To Greatest")
+          if (["Over/Under Line","Over Odds","Under Odds"].includes(sortCol)){
+            console.log("first executed")
+            num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])  }).reverse()
+            data=num_data.concat(string_data)
+
+          }
+          else if(["Year","Actual Wins"].includes(sortCol)){
+            console.log("second executed")
+            data=num_data.concat(string_data)
+            data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])||+a["Over/Under Line"] - +b["Over/Under Line"]}).reverse()
+          }
+          else{
+            console.log("third executed")
+            data=num_data.concat(string_data)
+            data=data.sort(function(a,b) {
+              return a[sortCol].localeCompare(b[sortCol])||a["Division"].localeCompare(b["Division"]) ||a["Year"]-b["Year"] ;
+            }).reverse()
+
+          }
+          // num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]; })
+          // data=string_data.concat(num_data)
+        }
+        console.log("")
+    		var table = d3.select('#winTotals').append('table')
+                      .style("border","1px solid #b7b7b7")
+                      .style("border-collapse","collapse")
+                      .style("table-layout","fixed")
+    		var thead = table.append('thead')
+    		var	tbody = table.append('tbody');
+
+        var t = d3.select("#winTotals")
+                  .append("p")
+                  .attr("id","showOrder")
+                  .text(function(){
+                    if (leastToMost==true){
+                      asc = "Least to Greatest"
+                    }
+                    else{
+                      asc = "Greatest to Least"
+                    }
+                    return "Sorted by "+ sortCol+", "+asc
+                  })
+
+
+    		// append the header row
+    		th = thead.append('tr')
+            		  .selectAll('th')
+            		  .data(columns)
+                  .enter()
+            		  .append('th')
+            		    .text(function (column){
+                      return column;
+                    })
+                    .attr("id",function(column){
+                      return column;
+                    })
+                    .style("padding","1px 5px")
+                    .style("border-top","1px solid #b7b7b7")
+                    .style("word-wrap","break-word")
+                    .style("max-width","90px")
+
+
+
+    		// create a row for each object in the data
+    		var rows = tbody.selectAll('tr')
+    		  .data(data)
+    		  .enter()
+    		  .append('tr')
+
+    		// create a cell in each row for each column
+    		var cells = rows.selectAll('td')
+    		  .data(function (row) {
+    		    return columns.map(function (column) {
+    		      return {column: column, value: row[column]};
+    		    });
+    		  })
+    		  .enter()
+    		  .append('td')
+    		  .text(function (d) { return d.value; })
+          .attr("class",function(d){
+            return d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_");
+          })
+          .style("padding","1px 5px")
+          .style("border-top","1px solid #b7b7b7")
+          .style("text-align","center")
+        if(!condensed){
+          d3.selectAll(".Team")
+            .style("color","#4523d4")
+            .on("click",function(d){
+              d3.selectAll(".help").remove()
+              d3.selectAll("button").remove()
+              d3.select("#winTotals").append("button")
+                    .attr("id","showLargeButton")
+                    .text("Show Large Table")
+                    .on("click",show_large)
+              d3.select("#winTotals").append("button")
+                    .attr("id","showSmallButton")
+                    .text("Show Small Table")
+                    .on("click",show_small)
+              team=d["value"]
+              filtered=data.filter(function(v){return v.Team==team})
+              t.remove()
+              d3.select("table").remove()
+              make_graph(team,filtered)
+            })
+
+            th.on("mouseenter",function(){
+              thead.style("cursor","pointer")
+            })
+            .on("click",function(d){
+              d3.select("table").remove()
+              t.remove()
+              sortBy = d3.select(this).text()
+              console.log("sort by: "+sortBy)
+              console.log("sort col: "+sortCol)
+              if (sortBy==sortCol){
+                if(leastToMost==true){
+                  leastToMost=false
+                  console.log(leastToMost)
+                }
+                else{
+                  leastToMost=true
+                  console.log(leastToMost)
+                }
+
+                tabulate(data, cols, sortBy, leastToMost)
+              }
+              else{
+                console.log(leastToMost)
+                tabulate(data, cols, sortBy, leastToMost)
+              }
+
+            })
+          }
+
+        cells.on("mouseover",function(d){
+            d3.select(this.parentNode).selectAll("td").style("background-color","#c9e9c9") // Change background-color of row to yellow
+            d3.selectAll("."+d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_")).style("background-color","#c9e9c9") //Change background-color of column to yellow
+            d3.select(this).style("background-color","lightblue")
+            if(d3.select(this).attr("class")=="Team"&&!condensed){
+              d3.select(this).style("cursor","pointer").style("text-decoration","underline")
+            }
+          })
+          .on("mouseleave",function(d){
+            d3.selectAll("td").style("background-color","white")
+            if(d3.select(this).attr("class")=="Team"){
+              d3.select(this).style("text-decoration","none")
+            }
+          })
+
+
+    	  return table;
+    	}
+
+    	// render the table(s)
+      cols = ["Year","Team","Over/Under Line","Over Odds","Under Odds","Actual Wins","Over/Under Result","Division","Conference"]
+      // cols = ["Year","Team","Over/Under Line"]
+    	tabulate(data, cols, "Year",false);
+    	// tabulate(small_data, Object.keys(small_data[0]), "Team",false);
+      function show_small(){
+        d3.selectAll("button").remove()
+        d3.selectAll(".help").remove()
+        d3.select("#winTotals").append("button")
+              .attr("id","showLargeButton")
+              .text("Show Large Table")
+              .on("click",show_large)
+        d3.selectAll("table").remove()
+        d3.select("#showOrder").remove()
+        d3.select("#svg1").remove()
+        d3.select("#svg2").remove()
+        tabulate(small_data, Object.keys(small_data[0]), "Team",false,true);
+      }
+      function show_large(){
+        d3.selectAll(".help").remove()
+        d3.select("#winTotals").append("p").text("click on team to show stats").attr("class","help").style("font-size","20px")
+        d3.select("#winTotals").append("p").text("click on table header to sort").attr("class","help").style("font-size","20px")
+        d3.selectAll("button").remove()
+        d3.select("#winTotals").append("button")
+              .attr("id","showSmallButton")
+              .text("Show Small Table")
+              .on("click",show_small)
+        d3.selectAll("table").remove()
+        d3.select("#showOrder").remove()
+        d3.select("#svg1").remove()
+        d3.select("#svg2").remove()
+        tabulate(data, cols, "Year",false,false);
+      }
+
+
+      function make_graph(team,filtered){
+        filtered.sort(function(a,b) { return +a["Year"] - +b["Year"]; })
+        var width = 600,
+            height = 400,
+            marginL = 50,
+            marginR = 50,
+            marginT = 50,
+            marginB = 50,
+            font="Courier New";
+        svg=d3.select("#winTotals")
+            .append("svg")
+            .attr("id","svg1")
+            .attr("width",width)
+            .attr("height",height)
+            .style("display","block")
+            .style("margin-bottom",20)
+            .style("background-color","#eeeeee")
+        var xscale = d3.scaleLinear()
+           .domain([2007,2018])
+           .range([marginL, width-marginR]);
+        var x_axis = d3.axisBottom()
+                      .scale(xscale)
+                      .tickValues([2008,2009,2010,2011,2012,2013,2014,2015,2016,2017])
+                      .tickFormat(d3.format('.0f'))
+        svg.append("g")
+                .attr("transform", "translate(0,"+(height-marginB)+")")
+                .attr("id","xAxis")
+                .style("font-size","13px")
+                .style("font-family",font)
+                .style("font-weight","Bold")
+                .call(x_axis)
+                .selectAll("text")
+                .attr("transform","translate(-10,10)rotate(310)")
+        var yscale = d3.scaleLinear()
+           .domain([0,16])
+           .range([height-marginB,marginT]);
+        var y_axis = d3.axisLeft()
+                      .scale(yscale)
+                      .tickFormat(d3.format('.0f'))
+        svg.append("g")
+                .attr("transform", "translate("+marginL+",0)")
+                .attr("id","yAxis7")
+                .style("font-size","15px")
+                .style("font-family",font)
+                .style("font-weight","Bold")
+                .call(y_axis)
+        title=svg.append("text")
+                .attr("x",width/2)
+                .attr("y",25)
+                .attr("text-anchor","middle")
+                .style("font-size","25px")
+                .style("font-family",font)
+                .style("font-weight","bold")
+                .text(team)
+        subtitle=svg.append("text")
+                .attr("x",width/2)
+                .attr("y",45)
+                .attr("text-anchor","middle")
+                .style("font-size","14px")
+                .style("font-weight","bold")
+                .style("font-family",font)
+                .text("Actual wins and Over/Under Line")
+        subtitle2=svg.append("text")
+                .attr("x",width/2)
+                .attr("y",65)
+                .attr("text-anchor","middle")
+                .style("font-size","14px")
+                .style("font-family",font)
+                .text("(Hover over circles to see difference)")
+        leg1c = svg.append("circle")
+                .attr("cx",width-marginR-90)
+                .attr("cy",marginT/4)
+                .attr("r",5)
+                .style("fill","#4444aa")
+        leg1t=svg.append("text")
+                .attr("x",width-marginR-80)
+                .attr("y",marginT/4+5)
+                .style("font-size","13px")
+                .style("fill","#4444aa")
+                .style("font-family",font)
+                .text("Actual Wins")
+        leg2c = svg.append("circle")
+                .attr("cx",width-marginR-90)
+                .attr("cy",marginT*3/4)
+                .attr("r",5)
+                .style("fill","#ad3456")
+        leg2t=svg.append("text")
+                .attr("x",width-marginR-80)
+                .attr("y",marginT*3/4+5)
+                .style("font-size","13px")
+                .style("fill","#ad3456")
+                .style("font-family",font)
+                .text("Over/Under Line")
+
+        win_lineFunction = d3.line()
+                      .x(function(d) { return xscale(d["Year"]); })
+                      .y(function(d) { return yscale(d["Actual Wins"]); })
+        win_lines = svg.append("path")
+                      .attr("class","winLine")
+                      .attr("d",win_lineFunction(filtered))
+                      .attr("stroke", "#4444aa")
+                      .attr("stroke-width", 1)
+                      .attr("fill", "none");
+        win_circles=svg.selectAll(".winCircles")
+                      .data(filtered)
+                      .enter()
+                      .append("circle")
+                      .attr("class","winCircles")
+                      .attr("cx",function(d){
+                        return xscale(d["Year"])
+                      })
+                      .attr("cy",function(d){
+                        return yscale(d["Actual Wins"])
+                      })
+                      .style("fill","#4444aa")
+                      .on("mouseover",function(d){
+                        svg.append("text")
+                            .attr("class","displayDifference")
+                            .attr("x",xscale(d["Year"])+5)
+                            .attr("y",yscale(d["Actual Wins"])-5)
+                            .style("font-weight","bold")
+                            .style("font-size","20px")
+                            .text(function(){
+                              diff=d["Actual Wins"]-d["Over/Under Line"]
+                              if (diff>0){
+                                return "+"+diff
+                              }
+                              return diff
+                            })
+                      })
+                      .on("mouseleave",function(d){
+                        svg.selectAll(".displayDifference").remove()
+                      })
+                      .transition()
+                      .duration(300)
+                      .delay(function(d,i){
+                        return i*100
+                      })
+                      .attr("r",7)
+
+        predicted_lineFunction = d3.line()
+                      .defined(function(d) { return d["Over/Under Line"]!="OTB"; })
+                      .x(function(d) { return xscale(d["Year"]); })
+                      .y(function(d) { return yscale(d["Over/Under Line"]); })
+                      // .interpolate("linear");
+        predicted_lines = svg.append("path")
+                      .attr("class","predictedLine")
+                      .attr("d",predicted_lineFunction(filtered))
+                      .attr("stroke", "#ad3456")
+                      .attr("stroke-width", 1)
+                      .attr("fill", "none");
+        predicted_circles=svg.selectAll(".predictedCircles")
+                      .data(filtered)
+                      .enter()
+                      .append("circle")
+                      .attr("class","predictedCircles")
+                      .attr("cx",function(d){
+                        return xscale(d["Year"])
+                      })
+                      .attr("cy",function(d){
+                        if(d["Over/Under Line"]!="OTB"){
+                          return yscale(d["Over/Under Line"])
+                        }
+                        else{
+                          return 0
+                        }
+                      })
+                      .style("fill","#ad3456")
+                      .on("mouseover",function(d){
+                        svg.append("text")
+                            .attr("class","displayDifference")
+                            .attr("x",xscale(d["Year"])+5)
+                            .attr("y",yscale(d["Over/Under Line"])-5)
+                            .style("font-weight","bold")
+                            .style("font-size","20px")
+                            .text(function(){
+                              diff=d["Actual Wins"]-d["Over/Under Line"]
+                              if (diff>0){
+                                return "+"+diff
+                              }
+                              return diff
+                            })
+                      })
+                      .on("mouseleave",function(d){
+                        svg.selectAll(".displayDifference").remove()
+                      })
+                      .transition()
+                      .duration(300)
+                      .delay(function(d,i){
+                        return i*100
+                      })
+                      .attr("r",function(d){
+                        if(d["Over/Under Line"]!="OTB"){
+                          return 7
+                        }
+                        else{
+                          return 0
+                        }
+                      })
+
+
+
+
+        svg2=d3.select("#winTotals")
+            .append("svg")
+            .attr("id","svg2")
+            .attr("width",width)
+            .attr("height",height)
+            .style("background-color","#eeeeee")
+        var xscale2 = d3.scaleLinear()
+           .domain([2007,2018])
+           .range([marginL, width-marginR]);
+        var x_axis2 = d3.axisBottom()
+                      .scale(xscale2)
+                      .tickValues([2008,2009,2010,2011,2012,2013,2014,2015,2016,2017])
+                      .tickFormat(d3.format('.0f'))
+        svg2.append("g")
+                .attr("transform", "translate(0,"+(height-marginB)+")")
+                .attr("id","xAxis7B")
+                .style("font-size","13px")
+                .style("font-family",font)
+                .style("font-weight","Bold")
+                .call(x_axis2)
+                .selectAll("text")
+                .attr("transform","translate(-10,10)rotate(310)")
+        var yscale2 = d3.scaleLinear()
+           .domain([-10,10])
+           .range([height-marginB,marginT]);
+        var y_axis = d3.axisLeft()
+                      .scale(yscale2)
+                      .tickFormat(d3.format('.0f'))
+        svg2.append("g")
+                .attr("transform", "translate("+marginL+",0)")
+                .attr("id","yAxis7B")
+                .style("font-size","15px")
+                .style("font-family",font)
+                .style("font-weight","Bold")
+                .style("display","block")
+                .call(y_axis)
+        title=svg2.append("text")
+                .attr("x",width/2)
+                .attr("y",25)
+                .attr("text-anchor","middle")
+                .style("font-size","25px")
+                .style("font-family",font)
+                .style("font-weight","bold")
+                .text(team)
+        subtitle=svg2.append("text")
+                .attr("x",width/2)
+                .attr("y",45)
+                .attr("text-anchor","middle")
+                .style("font-size","15px")
+                .style("font-family",font)
+                .text("Difference between Actual Wins and Over/Under Line")
+
+        svg2.append("line")
+                .attr("x1",xscale2(2007))
+                .attr("y1",yscale2(0)+1)
+                .attr("x2",xscale2(2018))
+                .attr("y2",yscale2(0)+1)
+                .attr("stroke","black")
+                .attr("stroke-width",1)
+                .attr("stroke-dasharray","4 3")
+
+
+        only_lineFunction = d3.line()
+                      // .defined(function(d) { return d["Over/Under Line"]!="OTB"; })
+                      .x(function(d) { return xscale2(d["Year"]); })
+                      .y(function(d) {
+                        if(d["Over/Under Line"]=="OTB"){
+                          return yscale2(0)
+                        }
+                        return yscale2(d["Actual Wins"]-d["Over/Under Line"]);
+                      })
+        only_lines = svg2.append("path")
+                      .attr("d",only_lineFunction(filtered))
+                      .attr("stroke", "black")
+                      .attr("stroke-width", 1)
+                      .attr("fill", "none");
+        only_circles=svg2.selectAll(".onlyCircles")
+                      .data(filtered)
+                      .enter()
+                      .append("circle")
+                      .attr("class","winCircles")
+                      .attr("cx",function(d){
+                        return xscale2(d["Year"])
+                      })
+                      .attr("cy",function(d){
+                        if (d["Over/Under Line"]!="OTB"){
+                          return yscale2(d["Actual Wins"]-d["Over/Under Line"])
+                        }
+                        return yscale2(0)
+
+                      })
+                      .style("fill",function(d){
+                        if (d["Actual Wins"]-d["Over/Under Line"]>0){
+                          return "green"
+                        }
+                        else if(d["Actual Wins"]-d["Over/Under Line"]<0){
+                          return "red"
+                        }
+                        return "black"
+                      })
+                      .transition()
+                      .duration(300)
+                      .delay(function(d,i){
+                        return i*100
+                      })
+                      .attr("r",7)
+
+      }
+  </script>
+</html>
