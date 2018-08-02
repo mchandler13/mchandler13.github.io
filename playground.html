@@ -31,32 +31,8 @@ a.sort-by:after {
     </style>
   </head>
 
-  <body>
-    <div id="winTotals">
-    </div>
-  </body>
+  <div id="winTotals"></div>
   <script>
-
-    // d3.csv("data/Win_Total_Results.csv",function(error,data){
-    // d3.csv("data/small1.csv",function(error,data){
-    // d3.select("#winTotals").selectAll(".toData")
-    //       .data(data)
-    //       .enter()
-    //       .append("p")
-    //       .attr("class","toData")
-    //       .text(function(d){
-    //         team_str='{"Team":"'+d["Team"]+'",'
-    //         year_str='"Year":'+d["Year"]+','
-    //         OU_Line='"Over/Under Line":'+d["Over/Under Line"]+','
-    //         Over_Odds='"Over Odds":'+d["Over Odds"]+','
-    //         Under_Odds='"Under Odds":'+d["Under Odds"]+','
-    //         Actual_Wins='"Actual Wins":'+d["Actual Wins"]+','
-    //         result1='"Over/Under Result":"'+d["Over/Under Result"]+'",'
-    //         result2='"Over/Under Number":'+(d["Actual Wins"]-d["Over/Under Line"])+','
-    //         div='"Division":"'+d["Division"]+'",'
-    //         con='"Conference":"'+d["Conference"]+'"},'
-    //         return team_str+year_str+OU_Line+Over_Odds+Under_Odds+Actual_Wins+result1+result2+div+con
-    //       })
     data_large=[{"Team":"Cardinals","Year":2008,"Over/Under Line":8,"Over Odds":110,"Under Odds":-140,"Actual Wins":9,"Over/Under Result":"O","Over/Under Number":1,"Division":"NFC West","Conference":"NFC"},
           {"Team":"Falcons","Year":2008,"Over/Under Line":4.5,"Over Odds":-130,"Under Odds":100,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":6.5,"Division":"NFC South","Conference":"NFC"},
           {"Team":"Ravens","Year":2008,"Over/Under Line":6,"Over Odds":-145,"Under Odds":115,"Actual Wins":11,"Over/Under Result":"O","Over/Under Number":5,"Division":"AFC North","Conference":"AFC"},
@@ -421,12 +397,47 @@ a.sort-by:after {
             "Colts":"AFC South","Jaguars":"AFC South","Texans":"AFC South","Titans":"AFC South",
             "Broncos":"AFC West","Chiefs":"AFC West","Chargers":"AFC West","Raiders":"AFC West"
           }
+          stddev={'49ers': 2.58,
+           'Bears': 2.03,
+           'Bengals': 2.99,
+           'Bills': 1.56,
+           'Broncos': 2.24,
+           'Browns': 1.65,
+           'Buccaneers': 2.98,
+           'Cardinals': 2.56,
+           'Chargers': 2.24,
+           'Chiefs': 3.24,
+           'Colts': 3.25,
+           'Cowboys': 2.92,
+           'Dolphins': 2.28,
+           'Eagles': 3.03,
+           'Falcons': 3.47,
+           'Giants': 2.70,
+           'Jaguars': 2.61,
+           'Jets': 2.09,
+           'Lions': 2.98,
+           'Packers': 2.05,
+           'Panthers': 3.71,
+           'Patriots': 1.81,
+           'Raiders': 2.28,
+           'Rams': 3.26,
+           'Ravens': 2.17,
+           'Redskins': 2.71,
+           'Saints': 2.38,
+           'Seahawks': 2.36,
+           'Steelers': 1.86,
+           'Texans': 3.28,
+           'Titans': 2.89,
+           'Vikings': 3.09
+         }
           nested2=d3.nest()
                     .key(function(d){return d["Team"]})
                     .rollup(function(v){
                       return {
                         "Mean Wins":d3.mean(v, function(d) { return d["Actual Wins"];}),
-                        "Mean Over/Under Line":Math.round(100*d3.mean(v, function(d) { return d["Over/Under Line"];}))/100,
+                        "Mean Over/Under Line":Math.round(100*d3.mean(v, function(d) {
+                          return d["Over/Under Line"];
+                        }))/100,
                       }
                     })
                     .object(data_large)
@@ -437,7 +448,6 @@ a.sort-by:after {
                       return w.length;
                     })
                     .object(data_large)
-          console.log(nested)
           teams=Object.keys(nested)
           small_data=[]
           for (var i=0;i<teams.length;i++){
@@ -452,127 +462,83 @@ a.sort-by:after {
             }
             to_add["Mean Wins"]=nested2[teams[i]]["Mean Wins"]
             to_add["Mean O/U Line"]=nested2[teams[i]]["Mean Over/Under Line"]
+            to_add["STD DEV"]=stddev[teams[i]]
             to_add["Division"]=teams_to_divs[teams[i]]
             small_data.push(to_add)
           }
-
       function tabulate(data, columns, sortCol, leastToMost,current_table) {
-        // console.log(sortCol)
-
-
         string_data = data.filter(function(d){return d["Over Odds"] == "OTB";})
         num_data = data.filter(function(d){return d["Over Odds"] != "OTB";})
-        // console.log(arr)
-
-
-
-
-
-        // #################################################
-        // ######  Sorting individual team table ###########
-        // #################################################
         if(current_table=="one team"){
           if (leastToMost==true){
-            console.log("Least to Greatest")
             if (["Over/Under Line","Over Odds","Under Odds"].includes(sortCol)){
-              console.log("first executed")
               num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])  })
               data=string_data.concat(num_data)
-
             }
             else if(["Year","Actual Wins"].includes(sortCol)){
-              console.log("second executed")
               num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])||+a["Over/Under Line"] - +b["Over/Under Line"]})
               data=num_data.concat(string_data)
             }
             else{
-              console.log("third executed")
               data=num_data.concat(string_data)
               data=data.sort(function(a,b) {
                 return a[sortCol].localeCompare(b[sortCol])||a["Division"].localeCompare(b["Division"])||b["Year"]-a["Year"]  ;
               })
             }
-
           }
           else{
-            console.log("Greatest to Least")
             if (["Over/Under Line","Over Odds","Under Odds"].includes(sortCol)){
-              console.log("first executed")
               num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])  }).reverse()
               data=num_data.concat(string_data)
-
             }
             else if(["Year","Actual Wins"].includes(sortCol)){
-              console.log("second executed")
               data=num_data.concat(string_data)
               data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]||a["Division"].localeCompare(b["Division"])||+a["Over/Under Line"] - +b["Over/Under Line"]}).reverse()
             }
             else{
-              console.log("third executed")
               data=num_data.concat(string_data)
               data=data.sort(function(a,b) {
                 return a[sortCol].localeCompare(b[sortCol])||a["Division"].localeCompare(b["Division"]) ||a["Year"]-b["Year"] ;
               }).reverse()
-
             }
-            // num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]; })
-            // data=string_data.concat(num_data)
           }
         }
-        // #################################################
-        // ########  Sorting Win totals table ##############
-        // #################################################
         else if(current_table=="win totals table"){
-          console.log(sortCol)
           if (leastToMost==true){
-            console.log("Least To Greatest")
-            if (["Mean Wins","Mean O/U Line"].includes(sortCol)){
-              console.log("first executed")
+            if (["Mean Wins","Mean O/U Line","STD DEV"].includes(sortCol)){
               num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]})
               data=string_data.concat(num_data)
-
             }
             else if(["O/U/Push"].includes(sortCol)){
-              console.log("second executed")
               num_data.sort(function(a,b) { return +a[sortCol][0] - +b[sortCol][0]||+a[sortCol][2] - +b[sortCol][2]})
               data=num_data.concat(string_data)
             }
             else{
-              console.log("third executed")
               data=num_data.concat(string_data)
               data=data.sort(function(a,b) {return a[sortCol].localeCompare(b[sortCol]);})
             }
           }
           else{
-            console.log("Greatest To Least")
-            if (["Mean Wins","Mean O/U Line"].includes(sortCol)){
-              console.log("first executed")
+            if (["Mean Wins","Mean O/U Line","STD DEV"].includes(sortCol)){
               num_data.sort(function(a,b) { return +a[sortCol] - +b[sortCol]}).reverse()
               data=string_data.concat(num_data)
-
             }
             else if(["O/U/Push"].includes(sortCol)){
-              console.log("second executed")
               num_data.sort(function(a,b) { return +a[sortCol][0] - +b[sortCol][0]||+a[sortCol][2] - +b[sortCol][2]}).reverse()
               data=num_data.concat(string_data)
             }
             else{
-              console.log("third executed")
               data=num_data.concat(string_data)
               data=data.sort(function(a,b) {return a[sortCol].localeCompare(b[sortCol]);}).reverse()
             }
           }
         }
-        console.log("")
     		var table = d3.select('#winTotals').append('table')
                       .style("border","1px solid #b7b7b7")
                       .style("border-collapse","collapse")
                       .style("table-layout","fixed")
     		var thead = table.append('thead')
     		var	tbody = table.append('tbody');
-
-
-    		// append the header row
     		th = thead.append('tr')
             		  .selectAll('th')
             		  .data(columns)
@@ -590,17 +556,10 @@ a.sort-by:after {
                   .attr("id",function(column){
                     return column;
                   })
-
-
-
-
-    		// create a row for each object in the data
     		var rows = tbody.selectAll('tr')
     		  .data(data)
     		  .enter()
     		  .append('tr')
-
-    		// create a cell in each row for each column
     		var cells = rows.selectAll('td')
     		  .data(function (row) {
     		    return columns.map(function (column) {
@@ -616,7 +575,6 @@ a.sort-by:after {
           .style("padding","1px 5px")
           .style("border-top","1px solid #b7b7b7")
           .style("text-align","center")
-
         if(current_table=="win totals table"){
           d3.selectAll(".Team")
             .style("color","#4523d4")
@@ -624,7 +582,6 @@ a.sort-by:after {
               team=d["value"]
               filtered=data_large.filter(function(v){return v.Team==team})
               d3.select("table").remove()
-              // console.log(filtered)
               d3.select("#winTotals").append("button")
                     .attr("id","showLargeButton")
                     .style("padding","3px 30px")
@@ -646,24 +603,18 @@ a.sort-by:after {
               make_graph(team,filtered)
             })
           }
-
           th.on("mouseenter",function(){
             thead.style("cursor","pointer")
           })
           .on("click",function(d){
             d3.select("table").remove()
             sortBy = d3.select(this).text()
-            // Check to see if you are sorting the same column
-
-            // if so, reverse the order
             if (sortBy==sortCol){
               if(leastToMost==true){
                 leastToMost=false
-                // console.log(leastToMost)
               }
               else{
                 leastToMost=true
-                // console.log(leastToMost)
               }
               if(current_table=="one team"){
                 console.log("if")
@@ -675,7 +626,6 @@ a.sort-by:after {
               }
             }
             else{
-              // console.log(leastToMost)
               if(current_table=="one team"){
                 console.log("if")
                 tabulate(filtered, cols, sortBy, false,"one team")
@@ -685,10 +635,7 @@ a.sort-by:after {
                 tabulate(small_data, Object.keys(small_data[0]), sortBy,false,"win totals table");
               }
             }
-
           })
-
-
         cells.on("mouseover",function(d){
             d3.select(this.parentNode).selectAll("td").style("background-color","#c9e9c9") // Change background-color of row to yellow
             d3.selectAll("."+d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_")).style("background-color","#c9e9c9") //Change background-color of column to yellow
@@ -703,17 +650,10 @@ a.sort-by:after {
               d3.select(this).style("text-decoration","none")
             }
           })
-
-
     	  return table;
     	}
-
-    	// render the table(s)
       cols = ["Year","Team","Over/Under Line","Over Odds","Under Odds","Actual Wins","Over/Under Result"]
-      // cols = ["Year","Team","Over/Under Line"]
-    	// tabulate(data, cols, "Year",false);
     	tabulate(small_data, Object.keys(small_data[0]), "Team",false,"win totals table");
-
       function show_win_totals_table(){
         d3.selectAll(".help").remove()
         d3.selectAll("button").remove()
@@ -723,8 +663,6 @@ a.sort-by:after {
         d3.select("#svg2").remove()
         tabulate(small_data, Object.keys(small_data[0]), "Team",false,"win totals table");
       }
-
-
       function make_graph(team,filtered){
         filtered.sort(function(a,b) { return +a["Year"] - +b["Year"]; })
         var width = 700,
@@ -734,205 +672,16 @@ a.sort-by:after {
             marginT = 50,
             marginB = 80,
             font="Courier New";
-        // svg=d3.select("#winTotals")
-        //     .append("svg")
-        //     .attr("id","svg1")
-        //     .attr("width",width)
-        //     .attr("height",height)
-        //     .style("display","block")
-        //     .style("margin-bottom",20)
-        // var xscale = d3.scaleLinear()
-        //    .domain([2007,2018])
-        //    .range([marginL, width-marginR]);
-        // var x_axis = d3.axisBottom()
-        //               .scale(xscale)
-        //               .tickValues([2008,2009,2010,2011,2012,2013,2014,2015,2016,2017])
-        //               .tickFormat(d3.format('.0f'))
-        // svg.append("g")
-        //         .attr("transform", "translate(0,"+(height-marginB)+")")
-        //         .attr("id","xAxis")
-        //         .style("font-size","13px")
-        //         .style("font-family",font)
-        //         .style("font-weight","Bold")
-        //         .call(x_axis)
-        //         .selectAll("text")
-        //         .attr("transform","translate(-10,10)rotate(310)")
-        // var yscale = d3.scaleLinear()
-        //    .domain([0,16])
-        //    .range([height-marginB,marginT]);
-        // var y_axis = d3.axisLeft()
-        //               .scale(yscale)
-        //               .tickFormat(d3.format('.0f'))
-        // svg.append("g")
-        //         .attr("transform", "translate("+marginL+",0)")
-        //         .attr("id","yAxis7")
-        //         .style("font-size","15px")
-        //         .style("font-family",font)
-        //         .style("font-weight","Bold")
-        //         .call(y_axis)
-        // title=svg.append("text")
-        //         .attr("x",width/2)
-        //         .attr("y",25)
-        //         .attr("text-anchor","middle")
-        //         .style("font-size","25px")
-        //         .style("font-family",font)
-        //         .style("font-weight","bold")
-        //         .text(team)
-        // subtitle=svg.append("text")
-        //         .attr("x",width/2)
-        //         .attr("y",45)
-        //         .attr("text-anchor","middle")
-        //         .style("font-size","14px")
-        //         .style("font-weight","bold")
-        //         .style("font-family",font)
-        //         .text("Actual wins and Over/Under Line")
-        // subtitle2=svg.append("text")
-        //         .attr("x",width/2)
-        //         .attr("y",65)
-        //         .attr("text-anchor","middle")
-        //         .style("font-size","14px")
-        //         .style("font-family",font)
-        //         .text("(Hover over circles to see difference)")
-        // leg1c = svg.append("circle")
-        //         .attr("cx",width-marginR-90)
-        //         .attr("cy",marginT/4)
-        //         .attr("r",5)
-        //         .style("fill","#4444aa")
-        // leg1t=svg.append("text")
-        //         .attr("x",width-marginR-80)
-        //         .attr("y",marginT/4+5)
-        //         .style("font-size","13px")
-        //         .style("fill","#4444aa")
-        //         .style("font-family",font)
-        //         .text("Actual Wins")
-        // leg2c = svg.append("circle")
-        //         .attr("cx",width-marginR-90)
-        //         .attr("cy",marginT*3/4)
-        //         .attr("r",5)
-        //         .style("fill","#ad3456")
-        // leg2t=svg.append("text")
-        //         .attr("x",width-marginR-80)
-        //         .attr("y",marginT*3/4+5)
-        //         .style("font-size","13px")
-        //         .style("fill","#ad3456")
-        //         .style("font-family",font)
-        //         .text("Over/Under Line")
-        //
-        // win_lineFunction = d3.line()
-        //               .x(function(d) { return xscale(d["Year"]); })
-        //               .y(function(d) { return yscale(d["Actual Wins"]); })
-        // win_lines = svg.append("path")
-        //               .attr("class","winLine")
-        //               .attr("d",win_lineFunction(filtered))
-        //               .attr("stroke", "#4444aa")
-        //               .attr("stroke-width", 1)
-        //               .attr("fill", "none");
-        // win_circles=svg.selectAll(".winCircles")
-        //               .data(filtered)
-        //               .enter()
-        //               .append("circle")
-        //               .attr("class","winCircles")
-        //               .attr("cx",function(d){
-        //                 return xscale(d["Year"])
-        //               })
-        //               .attr("cy",function(d){
-        //                 return yscale(d["Actual Wins"])
-        //               })
-        //               .style("fill","#4444aa")
-        //               .on("mouseover",function(d){
-        //                 svg.append("text")
-        //                     .attr("class","displayDifference")
-        //                     .attr("x",xscale(d["Year"])+5)
-        //                     .attr("y",yscale(d["Actual Wins"])-5)
-        //                     .style("font-weight","bold")
-        //                     .style("font-size","20px")
-        //                     .text(function(){
-        //                       diff=d["Actual Wins"]-d["Over/Under Line"]
-        //                       if (diff>0){
-        //                         return "+"+diff
-        //                       }
-        //                       return diff
-        //                     })
-        //               })
-        //               .on("mouseleave",function(d){
-        //                 svg.selectAll(".displayDifference").remove()
-        //               })
-        //               .transition()
-        //               .duration(300)
-        //               .delay(function(d,i){
-        //                 return i*100
-        //               })
-        //               .attr("r",7)
-        //
-        // predicted_lineFunction = d3.line()
-        //               .defined(function(d) { return d["Over/Under Line"]!="OTB"; })
-        //               .x(function(d) { return xscale(d["Year"]); })
-        //               .y(function(d) { return yscale(d["Over/Under Line"]); })
-        //               // .interpolate("linear");
-        // predicted_lines = svg.append("path")
-        //               .attr("class","predictedLine")
-        //               .attr("d",predicted_lineFunction(filtered))
-        //               .attr("stroke", "#ad3456")
-        //               .attr("stroke-width", 1)
-        //               .attr("fill", "none");
-        // predicted_circles=svg.selectAll(".predictedCircles")
-        //               .data(filtered)
-        //               .enter()
-        //               .append("circle")
-        //               .attr("class","predictedCircles")
-        //               .attr("cx",function(d){
-        //                 return xscale(d["Year"])
-        //               })
-        //               .attr("cy",function(d){
-        //                 if(d["Over/Under Line"]!="OTB"){
-        //                   return yscale(d["Over/Under Line"])
-        //                 }
-        //                 else{
-        //                   return 0
-        //                 }
-        //               })
-        //               .style("fill","#ad3456")
-        //               .on("mouseover",function(d){
-        //                 svg.append("text")
-        //                     .attr("class","displayDifference")
-        //                     .attr("x",xscale(d["Year"])+5)
-        //                     .attr("y",yscale(d["Over/Under Line"])-5)
-        //                     .style("font-weight","bold")
-        //                     .style("font-size","20px")
-        //                     .text(function(){
-        //                       diff=d["Actual Wins"]-d["Over/Under Line"]
-        //                       if (diff>0){
-        //                         return "+"+diff
-        //                       }
-        //                       return diff
-        //                     })
-        //               })
-        //               .on("mouseleave",function(d){
-        //                 svg.selectAll(".displayDifference").remove()
-        //               })
-        //               .transition()
-        //               .duration(300)
-        //               .delay(function(d,i){
-        //                 return i*100
-        //               })
-        //               .attr("r",function(d){
-        //                 if(d["Over/Under Line"]!="OTB"){
-        //                   return 7
-        //                 }
-        //                 else{
-        //                   return 0
-        //                 }
-        //               })
-
-
-
-
         svg2=d3.select("#winTotals")
             .append("svg")
             .attr("id","svg2")
-            .attr("width",width)
+            .attr("max-width",width)
+            .attr("width","90%")
             .attr("height",height)
+            .attr("viewBox","0 0 700 400")
+            .attr("preserveAspectRatio","xMinYMid meet")
             .style("display","block")
+            .style("margin-left","5%")
         var xscale2 = d3.scaleLinear()
            .domain([2007,2018])
            .range([marginL, width-marginR]);
@@ -1008,8 +757,6 @@ a.sort-by:after {
                 .style("font-size","15px")
                 .style("font-family",font)
                 .text("Larger Circles represent more wins")
-
-
         svg2.append("line")
                 .attr("x1",xscale2(2007))
                 .attr("y1",yscale2(0))
@@ -1018,10 +765,7 @@ a.sort-by:after {
                 .attr("stroke","black")
                 .attr("stroke-width",1)
                 .attr("stroke-dasharray","4 3")
-
-
         only_lineFunction = d3.line()
-                      // .defined(function(d) { return d["Over/Under Line"]!="OTB"; })
                       .x(function(d) { return xscale2(d["Year"]); })
                       .y(function(d) {
                         if(d["Over/Under Line"]=="OTB"){
@@ -1041,7 +785,6 @@ a.sort-by:after {
                     .duration(1000)
                     .ease(d3.easeLinear)
                     .attr("stroke-dashoffset", 0)
-
         only_circles=svg2.selectAll(".onlyCircles")
                       .data(filtered)
                       .enter()
@@ -1055,16 +798,13 @@ a.sort-by:after {
                           return yscale2(d["Actual Wins"]-d["Over/Under Line"])
                         }
                         return yscale2(0)
-
                       })
                       .attr("r",0)
                       .style("fill",function(d){
                         if (d["Actual Wins"]-d["Over/Under Line"]>0){
-                          // return teamColors[d["Team"]][1]
                           return "#34ac76"
                         }
                         else if(d["Actual Wins"]-d["Over/Under Line"]<0){
-                          // return teamColors[d["Team"]][0]
                           return "#dc1416"
                         }
                         return "#456789"
@@ -1075,7 +815,7 @@ a.sort-by:after {
                         info_box.style("display","block")
                                 .attr("x",x+8)
                                 .attr("y",y-60)
-                                .attr("width",140)
+                                .attr("width",155)
                                 .attr("height",135)
                                 .style("fill",function(){
                                   return teamColors[d["Team"]][0]
@@ -1198,7 +938,6 @@ a.sort-by:after {
         more_info4=svg2.append("text")
         more_info5=svg2.append("text")
         more_info6=svg2.append("text")
-
         only_circles.transition()
                     .duration(200)
                     .delay(function(d,i){
@@ -1207,8 +946,6 @@ a.sort-by:after {
                     .attr("r",function(d){
                       return d["Actual Wins"]*.75+3
                     })
-
-
       }
-  </script>
+</script>
 </html>
