@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Win % By Accepted Penalty</title>
+</head>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<div id="graph">
+  <div id="getInfo">
+    <select id="teamDrop"></select>
+  </div>
+</div>
+<script>
+// Data
+data=[
+{"Team":"ARI","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"ARI","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"ARI","Accepted Penalties":2,"Win Percentage":1},
+{"Team":"ARI","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"ARI","Accepted Penalties":4,"Win Percentage":0.5},
+{"Team":"ARI","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"ARI","Accepted Penalties":6,"Win Percentage":0.5},
+{"Team":"ARI","Accepted Penalties":7,"Win Percentage":0.5},
+{"Team":"ATL","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"ATL","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"ATL","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"ATL","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"ATL","Accepted Penalties":4,"Win Percentage":0.67},
+{"Team":"ATL","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"ATL","Accepted Penalties":6,"Win Percentage":0.67},
+{"Team":"ATL","Accepted Penalties":7,"Win Percentage":0.5},
+{"Team":"BAL","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"BAL","Accepted Penalties":1,"Win Percentage":1},
+{"Team":"BAL","Accepted Penalties":2,"Win Percentage":1},
+{"Team":"BAL","Accepted Penalties":3,"Win Percentage":0.5},
+{"Team":"BAL","Accepted Penalties":4,"Win Percentage":"NA"},
+{"Team":"BAL","Accepted Penalties":5,"Win Percentage":0.5},
+{"Team":"BAL","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"BAL","Accepted Penalties":7,"Win Percentage":1},
+{"Team":"BUF","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"BUF","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"BUF","Accepted Penalties":2,"Win Percentage":1},
+{"Team":"BUF","Accepted Penalties":3,"Win Percentage":0.5},
+{"Team":"BUF","Accepted Penalties":4,"Win Percentage":0.5},
+{"Team":"BUF","Accepted Penalties":5,"Win Percentage":0},
+{"Team":"BUF","Accepted Penalties":6,"Win Percentage":0.6},
+{"Team":"BUF","Accepted Penalties":7,"Win Percentage":"NA"},
+{"Team":"CAR","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"CAR","Accepted Penalties":1,"Win Percentage":0.33},
+{"Team":"CAR","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"CAR","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"CAR","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"CAR","Accepted Penalties":5,"Win Percentage":0.8},
+{"Team":"CAR","Accepted Penalties":6,"Win Percentage":0.8},
+{"Team":"CAR","Accepted Penalties":7,"Win Percentage":"NA"},
+{"Team":"CHI","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"CHI","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"CHI","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"CHI","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"CHI","Accepted Penalties":4,"Win Percentage":0.25},
+{"Team":"CHI","Accepted Penalties":5,"Win Percentage":0.67},
+{"Team":"CHI","Accepted Penalties":6,"Win Percentage":"NA"},
+{"Team":"CHI","Accepted Penalties":7,"Win Percentage":"NA"},
+{"Team":"CIN","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"CIN","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"CIN","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"CIN","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"CIN","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"CIN","Accepted Penalties":5,"Win Percentage":0.5},
+{"Team":"CIN","Accepted Penalties":6,"Win Percentage":1},
+{"Team":"CIN","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"CLE","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"CLE","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"CLE","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"CLE","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"CLE","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"CLE","Accepted Penalties":5,"Win Percentage":0},
+{"Team":"CLE","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"CLE","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"DAL","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"DAL","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"DAL","Accepted Penalties":2,"Win Percentage":0},
+{"Team":"DAL","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"DAL","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"DAL","Accepted Penalties":5,"Win Percentage":0.75},
+{"Team":"DAL","Accepted Penalties":6,"Win Percentage":"NA"},
+{"Team":"DAL","Accepted Penalties":7,"Win Percentage":0.4},
+{"Team":"DEN","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"DEN","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"DEN","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"DEN","Accepted Penalties":3,"Win Percentage":0.67},
+{"Team":"DEN","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"DEN","Accepted Penalties":5,"Win Percentage":0},
+{"Team":"DEN","Accepted Penalties":6,"Win Percentage":1},
+{"Team":"DEN","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"DET","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"DET","Accepted Penalties":1,"Win Percentage":0},
+{"Team":"DET","Accepted Penalties":2,"Win Percentage":1},
+{"Team":"DET","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"DET","Accepted Penalties":4,"Win Percentage":"NA"},
+{"Team":"DET","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"DET","Accepted Penalties":6,"Win Percentage":0.6},
+{"Team":"DET","Accepted Penalties":7,"Win Percentage":0.5},
+{"Team":"GB","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"GB","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"GB","Accepted Penalties":2,"Win Percentage":0},
+{"Team":"GB","Accepted Penalties":3,"Win Percentage":0.5},
+{"Team":"GB","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"GB","Accepted Penalties":5,"Win Percentage":0.5},
+{"Team":"GB","Accepted Penalties":6,"Win Percentage":0.33},
+{"Team":"GB","Accepted Penalties":7,"Win Percentage":1},
+{"Team":"HOU","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"HOU","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"HOU","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"HOU","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"HOU","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"HOU","Accepted Penalties":5,"Win Percentage":"NA"},
+{"Team":"HOU","Accepted Penalties":6,"Win Percentage":0.5},
+{"Team":"HOU","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"IND","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"IND","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"IND","Accepted Penalties":2,"Win Percentage":0},
+{"Team":"IND","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"IND","Accepted Penalties":4,"Win Percentage":0.25},
+{"Team":"IND","Accepted Penalties":5,"Win Percentage":0},
+{"Team":"IND","Accepted Penalties":6,"Win Percentage":1},
+{"Team":"IND","Accepted Penalties":7,"Win Percentage":0.5},
+{"Team":"JAC","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"JAC","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"JAC","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"JAC","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"JAC","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"JAC","Accepted Penalties":5,"Win Percentage":0},
+{"Team":"JAC","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"JAC","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"KC","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"KC","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"KC","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"KC","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"KC","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"KC","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"KC","Accepted Penalties":6,"Win Percentage":0.5},
+{"Team":"KC","Accepted Penalties":7,"Win Percentage":0.6},
+{"Team":"LAR","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"LAR","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"LAR","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"LAR","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"LAR","Accepted Penalties":4,"Win Percentage":"NA"},
+{"Team":"LAR","Accepted Penalties":5,"Win Percentage":0.5},
+{"Team":"LAR","Accepted Penalties":6,"Win Percentage":0.67},
+{"Team":"LAR","Accepted Penalties":7,"Win Percentage":0.71},
+{"Team":"LAC","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"LAC","Accepted Penalties":1,"Win Percentage":1},
+{"Team":"LAC","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"LAC","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"LAC","Accepted Penalties":4,"Win Percentage":0.5},
+{"Team":"LAC","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"LAC","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"LAC","Accepted Penalties":7,"Win Percentage":0.5},
+{"Team":"MIA","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"MIA","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"MIA","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"MIA","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"MIA","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"MIA","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"MIA","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"MIA","Accepted Penalties":7,"Win Percentage":0.33},
+{"Team":"MIN","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"MIN","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"MIN","Accepted Penalties":2,"Win Percentage":0.33},
+{"Team":"MIN","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"MIN","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"MIN","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"MIN","Accepted Penalties":6,"Win Percentage":1},
+{"Team":"MIN","Accepted Penalties":7,"Win Percentage":1},
+{"Team":"NE","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"NE","Accepted Penalties":1,"Win Percentage":1},
+{"Team":"NE","Accepted Penalties":2,"Win Percentage":1},
+{"Team":"NE","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"NE","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"NE","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"NE","Accepted Penalties":6,"Win Percentage":0.67},
+{"Team":"NE","Accepted Penalties":7,"Win Percentage":0.5},
+{"Team":"NO","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"NO","Accepted Penalties":1,"Win Percentage":1},
+{"Team":"NO","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"NO","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"NO","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"NO","Accepted Penalties":5,"Win Percentage":0},
+{"Team":"NO","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"NO","Accepted Penalties":7,"Win Percentage":0.67},
+{"Team":"NYG","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"NYG","Accepted Penalties":1,"Win Percentage":0},
+{"Team":"NYG","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"NYG","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"NYG","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"NYG","Accepted Penalties":5,"Win Percentage":0.67},
+{"Team":"NYG","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"NYG","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"NYJ","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"NYJ","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"NYJ","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"NYJ","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"NYJ","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"NYJ","Accepted Penalties":5,"Win Percentage":0.25},
+{"Team":"NYJ","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"NYJ","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"OAK","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"OAK","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"OAK","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"OAK","Accepted Penalties":3,"Win Percentage":0},
+{"Team":"OAK","Accepted Penalties":4,"Win Percentage":0},
+{"Team":"OAK","Accepted Penalties":5,"Win Percentage":0.5},
+{"Team":"OAK","Accepted Penalties":6,"Win Percentage":0.33},
+{"Team":"OAK","Accepted Penalties":7,"Win Percentage":0.25},
+{"Team":"PHI","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"PHI","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"PHI","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"PHI","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"PHI","Accepted Penalties":4,"Win Percentage":0.5},
+{"Team":"PHI","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"PHI","Accepted Penalties":6,"Win Percentage":"NA"},
+{"Team":"PHI","Accepted Penalties":7,"Win Percentage":0.33},
+{"Team":"PIT","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"PIT","Accepted Penalties":1,"Win Percentage":1},
+{"Team":"PIT","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"PIT","Accepted Penalties":3,"Win Percentage":1},
+{"Team":"PIT","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"PIT","Accepted Penalties":5,"Win Percentage":0.67},
+{"Team":"PIT","Accepted Penalties":6,"Win Percentage":0.5},
+{"Team":"PIT","Accepted Penalties":7,"Win Percentage":1},
+{"Team":"SEA","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"SEA","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"SEA","Accepted Penalties":2,"Win Percentage":"NA"},
+{"Team":"SEA","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"SEA","Accepted Penalties":4,"Win Percentage":"NA"},
+{"Team":"SEA","Accepted Penalties":5,"Win Percentage":1},
+{"Team":"SEA","Accepted Penalties":6,"Win Percentage":0.67},
+{"Team":"SEA","Accepted Penalties":7,"Win Percentage":1},
+{"Team":"SF","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"SF","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"SF","Accepted Penalties":2,"Win Percentage":0},
+{"Team":"SF","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"SF","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"SF","Accepted Penalties":5,"Win Percentage":"NA"},
+{"Team":"SF","Accepted Penalties":6,"Win Percentage":0.33},
+{"Team":"SF","Accepted Penalties":7,"Win Percentage":0.33},
+{"Team":"TB","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"TB","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"TB","Accepted Penalties":2,"Win Percentage":0.5},
+{"Team":"TB","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"TB","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"TB","Accepted Penalties":5,"Win Percentage":0},
+{"Team":"TB","Accepted Penalties":6,"Win Percentage":0.5},
+{"Team":"TB","Accepted Penalties":7,"Win Percentage":0},
+{"Team":"TEN","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"TEN","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"TEN","Accepted Penalties":2,"Win Percentage":1},
+{"Team":"TEN","Accepted Penalties":3,"Win Percentage":0.5},
+{"Team":"TEN","Accepted Penalties":4,"Win Percentage":1},
+{"Team":"TEN","Accepted Penalties":5,"Win Percentage":0.6},
+{"Team":"TEN","Accepted Penalties":6,"Win Percentage":0},
+{"Team":"TEN","Accepted Penalties":7,"Win Percentage":1},
+{"Team":"WAS","Accepted Penalties":0,"Win Percentage":"NA"},
+{"Team":"WAS","Accepted Penalties":1,"Win Percentage":"NA"},
+{"Team":"WAS","Accepted Penalties":2,"Win Percentage":0},
+{"Team":"WAS","Accepted Penalties":3,"Win Percentage":"NA"},
+{"Team":"WAS","Accepted Penalties":4,"Win Percentage":0.33},
+{"Team":"WAS","Accepted Penalties":5,"Win Percentage":0.33},
+{"Team":"WAS","Accepted Penalties":6,"Win Percentage":1},
+{"Team":"WAS","Accepted Penalties":7,"Win Percentage":0.5}
+]
+// Variables for sizing the graph
+var width=800,
+    height=800,
+    marginL=100,
+    marginT=100,
+    marginR=100,
+    marginB=100;
+
+// The svg is the container of the graph
+svg=d3.select("#graph")
+  .append("svg")
+  .attr("width","90%")
+  .attr("max-width",width)
+  .attr("height",height)
+  .style("background-color","#ffffff")
+  .attr("viewBox","0 0 "+width+" "+height)
+  .attr("preserveAspectRatio","xMinYMid meet")
+
+// List of all the teams
+teams=["BAL","CLE","PIT","CIN","NE","BUF","NYJ","MIA","TEN","HOU","JAC","IND","DEN","KC","LAC","OAK",
+       "GB","DET","CHI","MIN","PHI","NYG","WAS","DAL","ATL","NO","TB","CAR","SEA","LAR","SF","ARI"]
+
+// Add options to the drop down list
+teamDrop=d3.select("#teamDrop")
+teamDrop.selectAll("option")
+     .data(teams)
+     .enter()
+     .append("option")
+     .attr("value",function(d){
+       return d;
+     })
+     .text(function(d){
+       return d;
+     })
+
+// call the update function when you change values
+teamDrop.on("change",function(){
+ selectedTeam = teamDrop.property("value")
+ d3.select("#xAxis").remove()
+ update(selectedTeam)
+})
+
+// Initial Graph
+update("BAL")
+
+// Create the update function (receives the given team)
+function update(team){
+  // Remove any elements on the svg (for updating)
+  svg.selectAll("circle").remove()
+  svg.selectAll("text").remove()
+  svg.selectAll("path").remove()
+
+  // Create the X axis
+  var xscale = d3.scaleLinear()
+     .domain([0,7])
+     .range([0+marginL, width-marginR]);
+  var x_axis = d3.axisBottom()
+                .scale(xscale)
+                .tickValues([0,1,2,3,4,5,6,7])
+                .tickFormat(d3.format('.0f'))
+  svg.append("g")
+          .attr("transform", "translate(0,"+(height-marginB)+")")
+          .attr("class","xAxis")
+          .style("font-size","1pc")
+          .style("font-family","Courier")
+          .call(x_axis)
+
+  // Create the Y axis
+  var yscale = d3.scaleLinear()
+     .domain([100,0])
+     .range([marginT,height-marginB]);
+  var y_axis = d3.axisLeft()
+                .scale(yscale)
+                .tickFormat(d3.format('.0f'))
+  svg.append("g")
+          .attr("transform", "translate("+marginL+",0)")
+          .attr("class","axis")
+          .style("font-size","1pc")
+          .style("font-family","Courier")
+          .call(y_axis)
+
+  // create the x axis label
+  xAxisLabel=svg.append("text")
+    .attr("x",(marginL+width-marginR)/2)
+    .attr("y",(height+height-marginB)/2)
+    .attr("text-anchor","middle")
+    .style("font-size","1.5pc")
+    .text("Number of Accepted Penalties")
+
+  // create the y axis label
+  yAxisLabel=svg.append("text")
+    .attr("transform","translate("+(marginL/2)+","+(marginT+height-marginB)/2+")rotate(270)")
+    .attr("text-anchor","middle")
+    .style("font-size","1.5pc")
+    .text("Win Percentage")
+
+  // create the title
+  title=svg.append("text")
+    .attr("x",(marginL+width-marginR)/2)
+    .attr("y",(marginT)/2)
+    .attr("text-anchor","middle")
+    .style("font-size","2pc")
+    .text("Win % by Penalties ("+team+")")
+
+  // filter the data to only include the selected team
+  filtered=data.filter(function(d){return d["Team"]==team})
+
+  // add the line to the graph
+  lineFunction = d3.line()
+                .defined(function(d) { return d["Win Percentage"]!="NA" })
+                .x(function(d) { return xscale(d["Accepted Penalties"]); })
+                .y(function(d) {
+                  return yscale(d["Win Percentage"]*100)
+                })
+  lines = svg.append("path")
+                .attr("d",lineFunction(filtered))
+                .attr("stroke", "black")
+                .attr("stroke-width", 1)
+                .attr("fill", "none")
+  var totalLength = lines.node().getTotalLength();
+  lines.attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition()
+              .duration(1000)
+              .ease(d3.easeLinear)
+              .attr("stroke-dashoffset", 0)
+
+  // add circles to the graph
+  svg.selectAll(".circles")
+    .data(filtered)
+    .enter()
+    .append("circle")
+    .attr("class","circles")
+    .attr("cx",function(d){
+      return xscale(d["Accepted Penalties"])
+    })
+    .attr("cy",function(d){
+      if(d["Win Percentage"]=="NA"){
+        return 0
+      }
+      return yscale(d["Win Percentage"]*100)
+    })
+    .attr("r",function(d){
+      if(d["Win Percentage"]=="NA"){
+        return 0
+      }
+      return 3
+    })
+
+}
+</script>
+</html>
