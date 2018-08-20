@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Money Line</title>
+</head>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<div id="moneyLine">
+  <div id="getInfo8">
+    <select id="moneyLineDD"></select>
+  </div>
+</div>
+<script>
+data=[
+{"Cent Line": 20,"Fav": -110,"Dog": -110,"Fav Percent": "52.38%","Dog Percent": "52.38%","Ovrnd": "104.76%"},
+{"Cent Line": 20,"Fav": -115,"Dog": -105,"Fav Percent": "53.49%","Dog Percent": "51.22%","Ovrnd": "104.71%"},
+{"Cent Line": 20,"Fav": -120,"Dog": +100,"Fav Percent": "54.55%","Dog Percent": "50.00%","Ovrnd": "104.55%"},
+{"Cent Line": 20,"Fav": -125,"Dog": +105,"Fav Percent": "55.56%","Dog Percent": "48.78%","Ovrnd": "104.34%"},
+{"Cent Line": 20,"Fav": -130,"Dog": +110,"Fav Percent": "56.52%","Dog Percent": "47.62%","Ovrnd": "104.14%"},
+{"Cent Line": 20,"Fav": -135,"Dog": +115,"Fav Percent": "57.45%","Dog Percent": "46.51%","Ovrnd": "103.96%"},
+{"Cent Line": 20,"Fav": -140,"Dog": +120,"Fav Percent": "58.33%","Dog Percent": "45.45%","Ovrnd": "103.79%"},
+{"Cent Line": 20,"Fav": -145,"Dog": +125,"Fav Percent": "59.18%","Dog Percent": "44.44%","Ovrnd": "103.63%"},
+{"Cent Line": 20,"Fav": -150,"Dog": +130,"Fav Percent": "60.00%","Dog Percent": "43.48%","Ovrnd": "103.48%"},
+{"Cent Line": 20,"Fav": -155,"Dog": +135,"Fav Percent": "60.78%","Dog Percent": "42.55%","Ovrnd": "103.34%"},
+{"Cent Line": 20,"Fav": -160,"Dog": +140,"Fav Percent": "61.54%","Dog Percent": "41.67%","Ovrnd": "103.21%"},
+{"Cent Line": 20,"Fav": -165,"Dog": +145,"Fav Percent": "62.26%","Dog Percent": "40.82%","Ovrnd": "103.08%"},
+{"Cent Line": 20,"Fav": -170,"Dog": +150,"Fav Percent": "62.96%","Dog Percent": "40.00%","Ovrnd": "102.96%"},
+{"Cent Line": 20,"Fav": -175,"Dog": +155,"Fav Percent": "63.64%","Dog Percent": "39.22%","Ovrnd": "102.85%"},
+{"Cent Line": 20,"Fav": -180,"Dog": +157,"Fav Percent": "64.29%","Dog Percent": "38.91%","Ovrnd": "103.20%"},
+{"Cent Line": 20,"Fav": -185,"Dog": +160,"Fav Percent": "64.91%","Dog Percent": "38.46%","Ovrnd": "103.37%"},
+{"Cent Line": 20,"Fav": -190,"Dog": +165,"Fav Percent": "65.52%","Dog Percent": "37.74%","Ovrnd": "103.25%"},
+{"Cent Line": 20,"Fav": -195,"Dog": +167,"Fav Percent": "66.10%","Dog Percent": "37.45%","Ovrnd": "103.55%"},
+{"Cent Line": 20,"Fav": -200,"Dog": +170,"Fav Percent": "66.67%","Dog Percent": "37.04%","Ovrnd": "103.70%"},
+{"Cent Line": 20,"Fav": -205,"Dog": +175,"Fav Percent": "67.21%","Dog Percent": "36.36%","Ovrnd": "103.58%"},
+{"Cent Line": 20,"Fav": -210,"Dog": +177,"Fav Percent": "67.74%","Dog Percent": "36.10%","Ovrnd": "103.84%"},
+{"Cent Line": 20,"Fav": -215,"Dog": +180,"Fav Percent": "68.25%","Dog Percent": "35.71%","Ovrnd": "103.97%"},
+{"Cent Line": 20,"Fav": -220,"Dog": +185,"Fav Percent": "68.75%","Dog Percent": "35.09%","Ovrnd": "103.84%"},
+{"Cent Line": 20,"Fav": -225,"Dog": +190,"Fav Percent": "69.23%","Dog Percent": "34.48%","Ovrnd": "103.71%"},
+{"Cent Line": 20,"Fav": -230,"Dog": +195,"Fav Percent": "69.70%","Dog Percent": "33.90%","Ovrnd": "103.60%"},
+{"Cent Line": 20,"Fav": -235,"Dog": +197,"Fav Percent": "70.15%","Dog Percent": "33.67%","Ovrnd": "103.82%"},
+{"Cent Line": 20,"Fav": -240,"Dog": +200,"Fav Percent": "70.59%","Dog Percent": "33.33%","Ovrnd": "103.92%"},
+{"Cent Line": 20,"Fav": -245,"Dog": +205,"Fav Percent": "71.01%","Dog Percent": "32.79%","Ovrnd": "103.80%"},
+{"Cent Line": 20,"Fav": -250,"Dog": +210,"Fav Percent": "71.43%","Dog Percent": "32.26%","Ovrnd": "103.69%"},
+{"Cent Line": 20,"Fav": -260,"Dog": +220,"Fav Percent": "72.22%","Dog Percent": "31.25%","Ovrnd": "103.47%"},
+{"Cent Line": 20,"Fav": -270,"Dog": +225,"Fav Percent": "72.97%","Dog Percent": "30.77%","Ovrnd": "103.74%"},
+{"Cent Line": 20,"Fav": -280,"Dog": +230,"Fav Percent": "73.68%","Dog Percent": "30.30%","Ovrnd": "103.99%"},
+{"Cent Line": 20,"Fav": -290,"Dog": +240,"Fav Percent": "74.36%","Dog Percent": "29.41%","Ovrnd": "103.77%"},
+{"Cent Line": 20,"Fav": -300,"Dog": +250,"Fav Percent": "75.00%","Dog Percent": "28.57%","Ovrnd": "103.57%"},
+{"Cent Line": 20,"Fav": -310,"Dog": +255,"Fav Percent": "75.61%","Dog Percent": "28.17%","Ovrnd": "103.78%"},
+{"Cent Line": 20,"Fav": -320,"Dog": +260,"Fav Percent": "76.19%","Dog Percent": "27.78%","Ovrnd": "103.97%"},
+{"Cent Line": 20,"Fav": -330,"Dog": +265,"Fav Percent": "76.74%","Dog Percent": "27.40%","Ovrnd": "104.14%"},
+{"Cent Line": 20,"Fav": -340,"Dog": +270,"Fav Percent": "77.27%","Dog Percent": "27.03%","Ovrnd": "104.30%"},
+{"Cent Line": 20,"Fav": -350,"Dog": +275,"Fav Percent": "77.78%","Dog Percent": "26.67%","Ovrnd": "104.44%"},
+{"Cent Line": 20,"Fav": -360,"Dog": +280,"Fav Percent": "78.26%","Dog Percent": "26.32%","Ovrnd": "104.58%"},
+{"Cent Line": 20,"Fav": -370,"Dog": +285,"Fav Percent": "78.72%","Dog Percent": "25.97%","Ovrnd": "104.70%"},
+{"Cent Line": 20,"Fav": -380,"Dog": +300,"Fav Percent": "79.17%","Dog Percent": "25.00%","Ovrnd": "104.17%"},
+{"Cent Line": 20,"Fav": -390,"Dog": +310,"Fav Percent": "79.59%","Dog Percent": "24.39%","Ovrnd": "103.98%"},
+{"Cent Line": 20,"Fav": -400,"Dog": +320,"Fav Percent": "80.00%","Dog Percent": "23.81%","Ovrnd": "103.81%"},
+{"Cent Line": 20,"Fav": -420,"Dog": +330,"Fav Percent": "80.77%","Dog Percent": "23.26%","Ovrnd": "104.03%"},
+{"Cent Line": 20,"Fav": -440,"Dog": +350,"Fav Percent": "81.48%","Dog Percent": "22.22%","Ovrnd": "103.70%"},
+{"Cent Line": 20,"Fav": -460,"Dog": +360,"Fav Percent": "82.14%","Dog Percent": "21.74%","Ovrnd": "103.88%"},
+{"Cent Line": 20,"Fav": -480,"Dog": +380,"Fav Percent": "82.76%","Dog Percent": "20.83%","Ovrnd": "103.59%"},
+{"Cent Line": 20,"Fav": -500,"Dog": +390,"Fav Percent": "83.33%","Dog Percent": "20.41%","Ovrnd": "103.74%"},
+{"Cent Line": 20,"Fav": -525,"Dog": +400,"Fav Percent": "84.00%","Dog Percent": "20.00%","Ovrnd": "104.00%"},
+{"Cent Line": 20,"Fav": -550,"Dog": +420,"Fav Percent": "84.62%","Dog Percent": "19.23%","Ovrnd": "103.85%"},
+{"Cent Line": 20,"Fav": -575,"Dog": +430,"Fav Percent": "85.19%","Dog Percent": "18.87%","Ovrnd": "104.05%"},
+{"Cent Line": 20,"Fav": -600,"Dog": +450,"Fav Percent": "85.71%","Dog Percent": "18.18%","Ovrnd": "103.90%"},
+{"Cent Line": 20,"Fav": -625,"Dog": +460,"Fav Percent": "86.21%","Dog Percent": "17.86%","Ovrnd": "104.06%"},
+{"Cent Line": 20,"Fav": -650,"Dog": +480,"Fav Percent": "86.67%","Dog Percent": "17.24%","Ovrnd": "103.91%"},
+{"Cent Line": 20,"Fav": -675,"Dog": +490,"Fav Percent": "87.10%","Dog Percent": "16.95%","Ovrnd": "104.05%"},
+{"Cent Line": 20,"Fav": -700,"Dog": +500,"Fav Percent": "87.50%","Dog Percent": "16.67%","Ovrnd": "104.17%"},
+{"Cent Line": 20,"Fav": -725,"Dog": +525,"Fav Percent": "87.88%","Dog Percent": "16.00%","Ovrnd": "103.88%"},
+{"Cent Line": 20,"Fav": -750,"Dog": +550,"Fav Percent": "88.24%","Dog Percent": "15.38%","Ovrnd": "103.62%"},
+{"Cent Line": 20,"Fav": -800,"Dog": +575,"Fav Percent": "88.89%","Dog Percent": "14.81%","Ovrnd": "103.70%"},
+{"Cent Line": 20,"Fav": -850,"Dog": +600,"Fav Percent": "89.47%","Dog Percent": "14.29%","Ovrnd": "103.76%"},
+{"Cent Line": 20,"Fav": -900,"Dog": +620,"Fav Percent": "90.00%","Dog Percent": "13.89%","Ovrnd": "103.89%"},
+{"Cent Line": 20,"Fav": -950,"Dog": +635,"Fav Percent": "90.48%","Dog Percent": "13.61%","Ovrnd": "104.08%"},
+{"Cent Line": 20,"Fav": -1000,"Dog": +650,"Fav Percent": "90.91%","Dog Percent": "13.33%","Ovrnd": "104.24%"},
+{"Cent Line": 20,"Fav": -1100,"Dog": +700,"Fav Percent": "91.67%","Dog Percent": "12.50%","Ovrnd": "104.17%"},
+{"Cent Line": 20,"Fav": -1200,"Dog": +750,"Fav Percent": "92.31%","Dog Percent": "11.76%","Ovrnd": "104.07%"},
+{"Cent Line": 20,"Fav": -1300,"Dog": +800,"Fav Percent": "92.86%","Dog Percent": "11.11%","Ovrnd": "103.97%"},
+{"Cent Line": 20,"Fav": -1400,"Dog": +850,"Fav Percent": "93.33%","Dog Percent": "10.53%","Ovrnd": "103.86%"},
+{"Cent Line": 20,"Fav": -1500,"Dog": +900,"Fav Percent": "93.75%","Dog Percent": "10.00%","Ovrnd": "103.75%"},
+{"Cent Line": 20,"Fav": -1600,"Dog": +1000,"Fav Percent": "94.12%","Dog Percent": "9.09%","Ovrnd": "103.21%"},
+{"Cent Line": 20,"Fav": -1700,"Dog": +1025,"Fav Percent": "94.44%","Dog Percent": "8.89%","Ovrnd": "103.33%"},
+{"Cent Line": 20,"Fav": -1800,"Dog": +1050,"Fav Percent": "94.74%","Dog Percent": "8.70%","Ovrnd": "103.43%"},
+{"Cent Line": 20,"Fav": -1900,"Dog": +1075,"Fav Percent": "95.00%","Dog Percent": "8.51%","Ovrnd": "103.51%"},
+{"Cent Line": 20,"Fav": -2000,"Dog": +1100,"Fav Percent": "95.24%","Dog Percent": "8.33%","Ovrnd": "103.57%"},
+{"Cent Line": 20,"Fav": -2250,"Dog": +1150,"Fav Percent": "95.74%","Dog Percent": "8.00%","Ovrnd": "103.74%"},
+{"Cent Line": 20,"Fav": -2500,"Dog": +1200,"Fav Percent": "96.15%","Dog Percent": "7.69%","Ovrnd": "103.85%"},
+{"Cent Line": 20,"Fav": -2750,"Dog": +1300,"Fav Percent": "96.49%","Dog Percent": "7.14%","Ovrnd": "103.63%"},
+{"Cent Line": 20,"Fav": -3000,"Dog": +1400,"Fav Percent": "96.77%","Dog Percent": "6.67%","Ovrnd": "103.44%"},
+{"Cent Line": 20,"Fav": -3500,"Dog": +1500,"Fav Percent": "97.22%","Dog Percent": "6.25%","Ovrnd": "103.47%"},
+{"Cent Line": 20,"Fav": -4000,"Dog": +1600,"Fav Percent": "97.56%","Dog Percent": "5.88%","Ovrnd": "103.44%"},
+{"Cent Line": 20,"Fav": -4500,"Dog": +1700,"Fav Percent": "97.83%","Dog Percent": "5.56%","Ovrnd": "103.38%"},
+{"Cent Line": 20,"Fav": -5000,"Dog": +1800,"Fav Percent": "98.04%","Dog Percent": "5.26%","Ovrnd": "103.30%"},
+{"Cent Line": 20,"Fav": -6000,"Dog": +1900,"Fav Percent": "98.36%","Dog Percent": "5.00%","Ovrnd": "103.36%"},
+{"Cent Line": 20,"Fav": -7000,"Dog": +2000,"Fav Percent": "98.59%","Dog Percent": "4.76%","Ovrnd": "103.35%"},
+{"Cent Line": 20,"Fav": -8500,"Dog": +2100,"Fav Percent": "98.84%","Dog Percent": "4.55%","Ovrnd": "103.38%"},
+{"Cent Line": 20,"Fav": -10000,"Dog": +2200,"Fav Percent": "99.01%","Dog Percent": "4.35%","Ovrnd": "103.36%"},
+{"Cent Line": 20,"Fav": -12500,"Dog": +2500,"Fav Percent": "99.21%","Dog Percent": "3.85%","Ovrnd": "103.05%"},
+{"Cent Line": 20,"Fav": -15000,"Dog": +2600,"Fav Percent": "99.34%","Dog Percent": "3.70%","Ovrnd": "103.04%"},
+{"Cent Line": 20,"Fav": -17500,"Dog": +2700,"Fav Percent": "99.43%","Dog Percent": "3.57%","Ovrnd": "103.00%"},
+{"Cent Line": 20,"Fav": -20000,"Dog": +2800,"Fav Percent": "99.50%","Dog Percent": "3.45%","Ovrnd": "102.95%"},
+{"Cent Line": 20,"Fav": -30000,"Dog": +2900,"Fav Percent": "99.67%","Dog Percent": "3.33%","Ovrnd": "103.00%"},
+{"Cent Line": 20,"Fav": -50000,"Dog": +3000,"Fav Percent": "99.80%","Dog Percent": "3.23%","Ovrnd": "103.03%"},
+{"Cent Line": 20,"Fav": -100000,"Dog": +4000,"Fav Percent": "99.90%","Dog Percent": "2.44%","Ovrnd": "102.34%"},
+{"Cent Line": 20,"Fav": -500000,"Dog": +5000,"Fav Percent": "99.98%","Dog Percent": "1.96%","Ovrnd": "101.94%"},
+{"Cent Line": 30,"Fav": -115,"Dog": -115,"Fav Percent": "53.49%","Dog Percent": "53.49%","Ovrnd": "106.98%"},
+{"Cent Line": 30,"Fav": -120,"Dog": -110,"Fav Percent": "54.55%","Dog Percent": "52.38%","Ovrnd": "106.93%"},
+{"Cent Line": 30,"Fav": -125,"Dog": -105,"Fav Percent": "55.56%","Dog Percent": "51.22%","Ovrnd": "106.78%"},
+{"Cent Line": 30,"Fav": -130,"Dog": +100,"Fav Percent": "56.52%","Dog Percent": "50.00%","Ovrnd": "106.52%"},
+{"Cent Line": 30,"Fav": -135,"Dog": +105,"Fav Percent": "57.45%","Dog Percent": "48.78%","Ovrnd": "106.23%"},
+{"Cent Line": 30,"Fav": -140,"Dog": +110,"Fav Percent": "58.33%","Dog Percent": "47.62%","Ovrnd": "105.95%"},
+{"Cent Line": 30,"Fav": -145,"Dog": +115,"Fav Percent": "59.18%","Dog Percent": "46.51%","Ovrnd": "105.70%"},
+{"Cent Line": 30,"Fav": -150,"Dog": +120,"Fav Percent": "60.00%","Dog Percent": "45.45%","Ovrnd": "105.45%"},
+{"Cent Line": 30,"Fav": -155,"Dog": +125,"Fav Percent": "60.78%","Dog Percent": "44.44%","Ovrnd": "105.23%"},
+{"Cent Line": 30,"Fav": -160,"Dog": +130,"Fav Percent": "61.54%","Dog Percent": "43.48%","Ovrnd": "105.02%"},
+{"Cent Line": 30,"Fav": -165,"Dog": +135,"Fav Percent": "62.26%","Dog Percent": "42.55%","Ovrnd": "104.82%"},
+{"Cent Line": 30,"Fav": -170,"Dog": +140,"Fav Percent": "62.96%","Dog Percent": "41.67%","Ovrnd": "104.63%"},
+{"Cent Line": 30,"Fav": -175,"Dog": +145,"Fav Percent": "63.64%","Dog Percent": "40.82%","Ovrnd": "104.45%"},
+{"Cent Line": 30,"Fav": -180,"Dog": +147,"Fav Percent": "64.29%","Dog Percent": "40.49%","Ovrnd": "104.77%"},
+{"Cent Line": 30,"Fav": -185,"Dog": +150,"Fav Percent": "64.91%","Dog Percent": "40.00%","Ovrnd": "104.91%"},
+{"Cent Line": 30,"Fav": -190,"Dog": +155,"Fav Percent": "65.52%","Dog Percent": "39.22%","Ovrnd": "104.73%"},
+{"Cent Line": 30,"Fav": -195,"Dog": +160,"Fav Percent": "66.10%","Dog Percent": "38.46%","Ovrnd": "104.56%"},
+{"Cent Line": 30,"Fav": -200,"Dog": +165,"Fav Percent": "66.67%","Dog Percent": "37.74%","Ovrnd": "104.40%"},
+{"Cent Line": 30,"Fav": -205,"Dog": +167,"Fav Percent": "67.21%","Dog Percent": "37.45%","Ovrnd": "104.67%"},
+{"Cent Line": 30,"Fav": -210,"Dog": +170,"Fav Percent": "67.74%","Dog Percent": "37.04%","Ovrnd": "104.78%"},
+{"Cent Line": 30,"Fav": -215,"Dog": +175,"Fav Percent": "68.25%","Dog Percent": "36.36%","Ovrnd": "104.62%"},
+{"Cent Line": 30,"Fav": -220,"Dog": +177,"Fav Percent": "68.75%","Dog Percent": "36.10%","Ovrnd": "104.85%"},
+{"Cent Line": 30,"Fav": -225,"Dog": +180,"Fav Percent": "69.23%","Dog Percent": "35.71%","Ovrnd": "104.95%"},
+{"Cent Line": 30,"Fav": -230,"Dog": +185,"Fav Percent": "69.70%","Dog Percent": "35.09%","Ovrnd": "104.78%"},
+{"Cent Line": 30,"Fav": -235,"Dog": +190,"Fav Percent": "70.15%","Dog Percent": "34.48%","Ovrnd": "104.63%"},
+{"Cent Line": 30,"Fav": -240,"Dog": +195,"Fav Percent": "70.59%","Dog Percent": "33.90%","Ovrnd": "104.49%"},
+{"Cent Line": 30,"Fav": -245,"Dog": +197,"Fav Percent": "71.01%","Dog Percent": "33.67%","Ovrnd": "104.68%"},
+{"Cent Line": 30,"Fav": -250,"Dog": +200,"Fav Percent": "71.43%","Dog Percent": "33.33%","Ovrnd": "104.76%"},
+{"Cent Line": 30,"Fav": -255,"Dog": +205,"Fav Percent": "71.83%","Dog Percent": "32.79%","Ovrnd": "104.62%"},
+{"Cent Line": 30,"Fav": -260,"Dog": +207,"Fav Percent": "72.22%","Dog Percent": "32.57%","Ovrnd": "104.80%"},
+{"Cent Line": 30,"Fav": -265,"Dog": +210,"Fav Percent": "72.60%","Dog Percent": "32.26%","Ovrnd": "104.86%"},
+{"Cent Line": 30,"Fav": -270,"Dog": +212,"Fav Percent": "72.97%","Dog Percent": "32.05%","Ovrnd": "105.02%"},
+{"Cent Line": 30,"Fav": -275,"Dog": +215,"Fav Percent": "73.33%","Dog Percent": "31.75%","Ovrnd": "105.08%"},
+{"Cent Line": 30,"Fav": -280,"Dog": +217,"Fav Percent": "73.68%","Dog Percent": "31.55%","Ovrnd": "105.23%"},
+{"Cent Line": 30,"Fav": -285,"Dog": +220,"Fav Percent": "74.03%","Dog Percent": "31.25%","Ovrnd": "105.28%"},
+{"Cent Line": 30,"Fav": -290,"Dog": +225,"Fav Percent": "74.36%","Dog Percent": "30.77%","Ovrnd": "105.13%"},
+{"Cent Line": 30,"Fav": -295,"Dog": +230,"Fav Percent": "74.68%","Dog Percent": "30.30%","Ovrnd": "104.99%"},
+{"Cent Line": 30,"Fav": -300,"Dog": +235,"Fav Percent": "75.00%","Dog Percent": "29.85%","Ovrnd": "104.85%"},
+{"Cent Line": 30,"Fav": -310,"Dog": +237,"Fav Percent": "75.61%","Dog Percent": "29.67%","Ovrnd": "105.28%"},
+{"Cent Line": 30,"Fav": -320,"Dog": +240,"Fav Percent": "76.19%","Dog Percent": "29.41%","Ovrnd": "105.60%"},
+{"Cent Line": 30,"Fav": -330,"Dog": +250,"Fav Percent": "76.74%","Dog Percent": "28.57%","Ovrnd": "105.32%"},
+{"Cent Line": 30,"Fav": -340,"Dog": +260,"Fav Percent": "77.27%","Dog Percent": "27.78%","Ovrnd": "105.05%"},
+{"Cent Line": 30,"Fav": -350,"Dog": +270,"Fav Percent": "77.78%","Dog Percent": "27.03%","Ovrnd": "104.80%"},
+{"Cent Line": 30,"Fav": -360,"Dog": +280,"Fav Percent": "78.26%","Dog Percent": "26.32%","Ovrnd": "104.58%"},
+{"Cent Line": 30,"Fav": -370,"Dog": +285,"Fav Percent": "78.72%","Dog Percent": "25.97%","Ovrnd": "104.70%"},
+{"Cent Line": 30,"Fav": -380,"Dog": +290,"Fav Percent": "79.17%","Dog Percent": "25.64%","Ovrnd": "104.81%"},
+{"Cent Line": 30,"Fav": -390,"Dog": +295,"Fav Percent": "79.59%","Dog Percent": "25.32%","Ovrnd": "104.91%"},
+{"Cent Line": 30,"Fav": -400,"Dog": +300,"Fav Percent": "80.00%","Dog Percent": "25.00%","Ovrnd": "105.00%"},
+{"Cent Line": 30,"Fav": -425,"Dog": +315,"Fav Percent": "80.95%","Dog Percent": "24.10%","Ovrnd": "105.05%"},
+{"Cent Line": 30,"Fav": -450,"Dog": +325,"Fav Percent": "81.82%","Dog Percent": "23.53%","Ovrnd": "105.35%"},
+{"Cent Line": 30,"Fav": -475,"Dog": +350,"Fav Percent": "82.61%","Dog Percent": "22.22%","Ovrnd": "104.83%"},
+{"Cent Line": 30,"Fav": -500,"Dog": +375,"Fav Percent": "83.33%","Dog Percent": "21.05%","Ovrnd": "104.39%"},
+{"Cent Line": 30,"Fav": -550,"Dog": +400,"Fav Percent": "84.62%","Dog Percent": "20.00%","Ovrnd": "104.62%"},
+{"Cent Line": 30,"Fav": -600,"Dog": +425,"Fav Percent": "85.71%","Dog Percent": "19.05%","Ovrnd": "104.76%"},
+{"Cent Line": 30,"Fav": -650,"Dog": +450,"Fav Percent": "86.67%","Dog Percent": "18.18%","Ovrnd": "104.85%"},
+{"Cent Line": 30,"Fav": -700,"Dog": +500,"Fav Percent": "87.50%","Dog Percent": "16.67%","Ovrnd": "104.17%"},
+{"Cent Line": 30,"Fav": -800,"Dog": +550,"Fav Percent": "88.89%","Dog Percent": "15.38%","Ovrnd": "104.27%"},
+{"Cent Line": 30,"Fav": -900,"Dog": +600,"Fav Percent": "90.00%","Dog Percent": "14.29%","Ovrnd": "104.29%"},
+{"Cent Line": 30,"Fav": -1000,"Dog": +650,"Fav Percent": "90.91%","Dog Percent": "13.33%","Ovrnd": "104.24%"},
+{"Cent Line": 30,"Fav": -1100,"Dog": +675,"Fav Percent": "91.67%","Dog Percent": "12.90%","Ovrnd": "104.57%"},
+{"Cent Line": 30,"Fav": -1200,"Dog": +700,"Fav Percent": "92.31%","Dog Percent": "12.50%","Ovrnd": "104.81%"},
+{"Cent Line": 30,"Fav": -1300,"Dog": +725,"Fav Percent": "92.86%","Dog Percent": "12.12%","Ovrnd": "104.98%"},
+{"Cent Line": 30,"Fav": -1400,"Dog": +750,"Fav Percent": "93.33%","Dog Percent": "11.76%","Ovrnd": "105.10%"},
+{"Cent Line": 30,"Fav": -1500,"Dog": +800,"Fav Percent": "93.75%","Dog Percent": "11.11%","Ovrnd": "104.86%"},
+{"Cent Line": 30,"Fav": -1600,"Dog": +900,"Fav Percent": "94.12%","Dog Percent": "10.00%","Ovrnd": "104.12%"},
+{"Cent Line": 30,"Fav": -1700,"Dog": +950,"Fav Percent": "94.44%","Dog Percent": "9.52%","Ovrnd": "103.97%"},
+{"Cent Line": 30,"Fav": -1800,"Dog": +1000,"Fav Percent": "94.74%","Dog Percent": "9.09%","Ovrnd": "103.83%"},
+{"Cent Line": 30,"Fav": -1900,"Dog": +1050,"Fav Percent": "95.00%","Dog Percent": "8.70%","Ovrnd": "103.70%"},
+{"Cent Line": 30,"Fav": -2000,"Dog": +1100,"Fav Percent": "95.24%","Dog Percent": "8.33%","Ovrnd": "103.57%"},
+{"Cent Line": 30,"Fav": -2250,"Dog": +1150,"Fav Percent": "95.74%","Dog Percent": "8.00%","Ovrnd": "103.74%"},
+{"Cent Line": 30,"Fav": -2500,"Dog": +1200,"Fav Percent": "96.15%","Dog Percent": "7.69%","Ovrnd": "103.85%"},
+{"Cent Line": 30,"Fav": -2750,"Dog": +1300,"Fav Percent": "96.49%","Dog Percent": "7.14%","Ovrnd": "103.63%"},
+{"Cent Line": 30,"Fav": -3000,"Dog": +1400,"Fav Percent": "96.77%","Dog Percent": "6.67%","Ovrnd": "103.44%"},
+{"Cent Line": 30,"Fav": -3500,"Dog": +1500,"Fav Percent": "97.22%","Dog Percent": "6.25%","Ovrnd": "103.47%"},
+{"Cent Line": 30,"Fav": -4000,"Dog": +1600,"Fav Percent": "97.56%","Dog Percent": "5.88%","Ovrnd": "103.44%"},
+{"Cent Line": 30,"Fav": -4500,"Dog": +1700,"Fav Percent": "97.83%","Dog Percent": "5.56%","Ovrnd": "103.38%"},
+{"Cent Line": 30,"Fav": -5000,"Dog": +1800,"Fav Percent": "98.04%","Dog Percent": "5.26%","Ovrnd": "103.30%"},
+{"Cent Line": 30,"Fav": -6000,"Dog": +1900,"Fav Percent": "98.36%","Dog Percent": "5.00%","Ovrnd": "103.36%"},
+{"Cent Line": 30,"Fav": -7000,"Dog": +2000,"Fav Percent": "98.59%","Dog Percent": "4.76%","Ovrnd": "103.35%"},
+{"Cent Line": 30,"Fav": -8500,"Dog": +2100,"Fav Percent": "98.84%","Dog Percent": "4.55%","Ovrnd": "103.38%"},
+{"Cent Line": 30,"Fav": -10000,"Dog": +2200,"Fav Percent": "99.01%","Dog Percent": "4.35%","Ovrnd": "103.36%"},
+{"Cent Line": 30,"Fav": -12500,"Dog": +2500,"Fav Percent": "99.21%","Dog Percent": "3.85%","Ovrnd": "103.05%"},
+{"Cent Line": 30,"Fav": -15000,"Dog": +2600,"Fav Percent": "99.34%","Dog Percent": "3.70%","Ovrnd": "103.04%"},
+{"Cent Line": 30,"Fav": -17500,"Dog": +2700,"Fav Percent": "99.43%","Dog Percent": "3.57%","Ovrnd": "103.00%"},
+{"Cent Line": 30,"Fav": -20000,"Dog": +2800,"Fav Percent": "99.50%","Dog Percent": "3.45%","Ovrnd": "102.95%"},
+{"Cent Line": 30,"Fav": -30000,"Dog": +2900,"Fav Percent": "99.67%","Dog Percent": "3.33%","Ovrnd": "103.00%"},
+{"Cent Line": 30,"Fav": -50000,"Dog": +3000,"Fav Percent": "99.80%","Dog Percent": "3.23%","Ovrnd": "103.03%"},
+{"Cent Line": 30,"Fav": -100000,"Dog": +4000,"Fav Percent": "99.90%","Dog Percent": "2.44%","Ovrnd": "102.34%"},
+{"Cent Line": 30,"Fav": -500000,"Dog": +5000,"Fav Percent": "99.98%","Dog Percent": "1.96%","Ovrnd": "101.94%"},
+{"Cent Line": 40,"Fav": -120,"Dog": -120,"Fav Percent": "54.55%","Dog Percent": "54.55%","Ovrnd": "109.09%"},
+{"Cent Line": 40,"Fav": -125,"Dog": -115,"Fav Percent": "55.56%","Dog Percent": "53.49%","Ovrnd": "109.04%"},
+{"Cent Line": 40,"Fav": -130,"Dog": -110,"Fav Percent": "56.52%","Dog Percent": "52.38%","Ovrnd": "108.90%"},
+{"Cent Line": 40,"Fav": -135,"Dog": -105,"Fav Percent": "57.45%","Dog Percent": "51.22%","Ovrnd": "108.67%"},
+{"Cent Line": 40,"Fav": -140,"Dog": +100,"Fav Percent": "58.33%","Dog Percent": "50.00%","Ovrnd": "108.33%"},
+{"Cent Line": 40,"Fav": -145,"Dog": +105,"Fav Percent": "59.18%","Dog Percent": "48.78%","Ovrnd": "107.96%"},
+{"Cent Line": 40,"Fav": -150,"Dog": +110,"Fav Percent": "60.00%","Dog Percent": "47.62%","Ovrnd": "107.62%"},
+{"Cent Line": 40,"Fav": -155,"Dog": +115,"Fav Percent": "60.78%","Dog Percent": "46.51%","Ovrnd": "107.30%"},
+{"Cent Line": 40,"Fav": -160,"Dog": +120,"Fav Percent": "61.54%","Dog Percent": "45.45%","Ovrnd": "106.99%"},
+{"Cent Line": 40,"Fav": -165,"Dog": +125,"Fav Percent": "62.26%","Dog Percent": "44.44%","Ovrnd": "106.71%"},
+{"Cent Line": 40,"Fav": -175,"Dog": +130,"Fav Percent": "63.64%","Dog Percent": "43.48%","Ovrnd": "107.11%"},
+{"Cent Line": 40,"Fav": -185,"Dog": +140,"Fav Percent": "64.91%","Dog Percent": "41.67%","Ovrnd": "106.58%"},
+{"Cent Line": 40,"Fav": -190,"Dog": +145,"Fav Percent": "65.52%","Dog Percent": "40.82%","Ovrnd": "106.33%"},
+{"Cent Line": 40,"Fav": -200,"Dog": +150,"Fav Percent": "66.67%","Dog Percent": "40.00%","Ovrnd": "106.67%"},
+{"Cent Line": 40,"Fav": -210,"Dog": +155,"Fav Percent": "67.74%","Dog Percent": "39.22%","Ovrnd": "106.96%"},
+{"Cent Line": 40,"Fav": -220,"Dog": +160,"Fav Percent": "68.75%","Dog Percent": "38.46%","Ovrnd": "107.21%"},
+{"Cent Line": 40,"Fav": -225,"Dog": +165,"Fav Percent": "69.23%","Dog Percent": "37.74%","Ovrnd": "106.97%"},
+{"Cent Line": 40,"Fav": -235,"Dog": +170,"Fav Percent": "70.15%","Dog Percent": "37.04%","Ovrnd": "107.19%"},
+{"Cent Line": 40,"Fav": -245,"Dog": +175,"Fav Percent": "71.01%","Dog Percent": "36.36%","Ovrnd": "107.38%"},
+{"Cent Line": 40,"Fav": -260,"Dog": +180,"Fav Percent": "72.22%","Dog Percent": "35.71%","Ovrnd": "107.94%"},
+{"Cent Line": 40,"Fav": -265,"Dog": +185,"Fav Percent": "72.60%","Dog Percent": "35.09%","Ovrnd": "107.69%"},
+{"Cent Line": 40,"Fav": -275,"Dog": +190,"Fav Percent": "73.33%","Dog Percent": "34.48%","Ovrnd": "107.82%"},
+{"Cent Line": 40,"Fav": -280,"Dog": +195,"Fav Percent": "73.68%","Dog Percent": "33.90%","Ovrnd": "107.58%"},
+{"Cent Line": 40,"Fav": -285,"Dog": +200,"Fav Percent": "74.03%","Dog Percent": "33.33%","Ovrnd": "107.36%"},
+{"Cent Line": 40,"Fav": -300,"Dog": +210,"Fav Percent": "75.00%","Dog Percent": "32.26%","Ovrnd": "107.26%"},
+{"Cent Line": 40,"Fav": -320,"Dog": +220,"Fav Percent": "76.19%","Dog Percent": "31.25%","Ovrnd": "107.44%"},
+{"Cent Line": 40,"Fav": -340,"Dog": +230,"Fav Percent": "77.27%","Dog Percent": "30.30%","Ovrnd": "107.58%"},
+{"Cent Line": 40,"Fav": -360,"Dog": +240,"Fav Percent": "78.26%","Dog Percent": "29.41%","Ovrnd": "107.67%"},
+{"Cent Line": 40,"Fav": -375,"Dog": +250,"Fav Percent": "78.95%","Dog Percent": "28.57%","Ovrnd": "107.52%"},
+{"Cent Line": 40,"Fav": -390,"Dog": +260,"Fav Percent": "79.59%","Dog Percent": "27.78%","Ovrnd": "107.37%"},
+{"Cent Line": 40,"Fav": -400,"Dog": +270,"Fav Percent": "80.00%","Dog Percent": "27.03%","Ovrnd": "107.03%"},
+{"Cent Line": 40,"Fav": -420,"Dog": +280,"Fav Percent": "80.77%","Dog Percent": "26.32%","Ovrnd": "107.09%"},
+{"Cent Line": 40,"Fav": -430,"Dog": +290,"Fav Percent": "81.13%","Dog Percent": "25.64%","Ovrnd": "106.77%"},
+{"Cent Line": 40,"Fav": -450,"Dog": +300,"Fav Percent": "81.82%","Dog Percent": "25.00%","Ovrnd": "106.82%"},
+{"Cent Line": 40,"Fav": -475,"Dog": +325,"Fav Percent": "82.61%","Dog Percent": "23.53%","Ovrnd": "106.14%"},
+{"Cent Line": 40,"Fav": -525,"Dog": +350,"Fav Percent": "84.00%","Dog Percent": "22.22%","Ovrnd": "106.22%"},
+{"Cent Line": 40,"Fav": -600,"Dog": +375,"Fav Percent": "85.71%","Dog Percent": "21.05%","Ovrnd": "106.77%"},
+{"Cent Line": 40,"Fav": -625,"Dog": +380,"Fav Percent": "86.21%","Dog Percent": "20.83%","Ovrnd": "107.04%"},
+{"Cent Line": 40,"Fav": -650,"Dog": +400,"Fav Percent": "86.67%","Dog Percent": "20.00%","Ovrnd": "106.67%"},
+{"Cent Line": 40,"Fav": -700,"Dog": +425,"Fav Percent": "87.50%","Dog Percent": "19.05%","Ovrnd": "106.55%"},
+{"Cent Line": 40,"Fav": -750,"Dog": +450,"Fav Percent": "88.24%","Dog Percent": "18.18%","Ovrnd": "106.42%"},
+{"Cent Line": 40,"Fav": -800,"Dog": +460,"Fav Percent": "88.89%","Dog Percent": "17.86%","Ovrnd": "106.75%"},
+{"Cent Line": 40,"Fav": -900,"Dog": +500,"Fav Percent": "90.00%","Dog Percent": "16.67%","Ovrnd": "106.67%"},
+{"Cent Line": 40,"Fav": -1000,"Dog": +550,"Fav Percent": "90.91%","Dog Percent": "15.38%","Ovrnd": "106.29%"},
+{"Cent Line": 40,"Fav": -1200,"Dog": +600,"Fav Percent": "92.31%","Dog Percent": "14.29%","Ovrnd": "106.59%"},
+{"Cent Line": 40,"Fav": -1400,"Dog": +650,"Fav Percent": "93.33%","Dog Percent": "13.33%","Ovrnd": "106.67%"},
+{"Cent Line": 40,"Fav": -1500,"Dog": +700,"Fav Percent": "93.75%","Dog Percent": "12.50%","Ovrnd": "106.25%"},
+{"Cent Line": 40,"Fav": -1600,"Dog": +750,"Fav Percent": "94.12%","Dog Percent": "11.76%","Ovrnd": "105.88%"},
+{"Cent Line": 40,"Fav": -1800,"Dog": +800,"Fav Percent": "94.74%","Dog Percent": "11.11%","Ovrnd": "105.85%"},
+{"Cent Line": 40,"Fav": -2000,"Dog": +900,"Fav Percent": "95.24%","Dog Percent": "10.00%","Ovrnd": "105.24%"},
+{"Cent Line": 40,"Fav": -2500,"Dog": +1000,"Fav Percent": "96.15%","Dog Percent": "9.09%","Ovrnd": "105.24%"},
+{"Cent Line": 40,"Fav": -3000,"Dog": +1200,"Fav Percent": "96.77%","Dog Percent": "7.69%","Ovrnd": "104.47%"},
+{"Cent Line": 40,"Fav": -4000,"Dog": +1400,"Fav Percent": "97.56%","Dog Percent": "6.67%","Ovrnd": "104.23%"},
+{"Cent Line": 40,"Fav": -5000,"Dog": +1600,"Fav Percent": "98.04%","Dog Percent": "5.88%","Ovrnd": "103.92%"}]
+d3.select("#moneyLine")
+  .style("max-width","60%")
+  .style("margin-left","20%")
+  .style("text-align","center")
+d3.select("#moneyLineDD")
+      .selectAll("option")
+      .data([20,30,40])
+      .enter()
+      .append("option")
+      .attr("value", function(option) { return option; })
+      .text(function(option) { return option; });
+moneyLineDD = d3.select("#moneyLineDD")
+moneyLineDD.on("change",function(d){
+  cents = d3.select("#moneyLineDD").node().value
+  d3.select("#moneyLine").select("table").remove()
+  d3.select("#moneyLine").select("h1").remove()
+  tabData=data.filter(function(d){return d["Cent Line"]==cents})
+  tabulateMoneyLine(cents,tabData,["Fav","Dog","Fav Percent","Dog Percent","Ovrnd"])
+})
+tabulateMoneyLine(20,data.filter(function(d){return d["Cent Line"]==20}),["Fav","Dog","Fav Percent","Dog Percent","Ovrnd"])
+
+function tabulateMoneyLine(cent,data, columns){
+  title=d3.select("#moneyLine").append("h1")
+    .text(cent+" Cent Line")
+    .style("text-decoration","underline")
+    .style("text-align","center")
+    .style("font-family", "Roboto Condensed, sans-serif")
+    .style("font-weight","700")
+    .style("font-size","32px")
+    .style("color","#282828")
+    .style("text-transform","uppercase")
+    .style("letter-spacing","1px")
+  var table = d3.select('#moneyLine').append('table')
+                .style("border","1px solid #b7b7b7")
+                .style("border-collapse","collapse")
+                .style("table-layout","fixed")
+                .style("width","60%")
+                .style("margin-left","20%")
+  var thead = table.append('thead')
+  var	tbody = table.append('tbody');
+  th = thead.append('tr')
+            .selectAll('th')
+            .data(columns)
+            .enter()
+            .append('th')
+            .style("padding","4px 8px")
+            .style("border-top","1px solid #b7b7b7")
+            .style("word-wrap","break-word")
+            .style("font-size","15px")
+            .append("a")
+            .attr("class","sort-by")
+            .text(function (column){
+              return column;
+            })
+            .attr("id",function(column){
+              return column;
+            })
+  th.on("mouseenter",function(){
+    thead.style("cursor","pointer")
+  })
+  var rows = tbody.selectAll('tr')
+    .data(data)
+    .enter()
+    .append('tr')
+  var cells = rows.selectAll('td')
+    .data(function (row) {
+      return columns.map(function (column) {
+        return {column: column, value: row[column]};
+      });
+    })
+    .enter()
+    .append('td')
+    .text(function (d) { return d.value; })
+    .attr("class",function(d){
+      return d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_");
+    })
+    .style("padding","1px 5px")
+    .style("border-top","1px solid #b7b7b7")
+    .style("text-align","center")
+    .style("font-family", "Open Sans,sans-serif")
+    .style("font-size","16px")
+    .style("font-weight","400")
+    .style("color","#555555")
+  cells.on("mouseover",function(d){
+      d3.select(this.parentNode).selectAll("td").style("background-color","#c9e9c9") // Change background-color of row to yellow
+      d3.selectAll("."+d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_")).style("background-color","#c9e9c9") //Change background-color of column to yellow
+      d3.select(this).style("background-color","#e9c9c9")
+    })
+    .on("mouseleave",function(d){
+      d3.selectAll("td").style("background-color","white")
+    })
+}
+
+</script>
+</html>
