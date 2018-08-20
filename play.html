@@ -6,12 +6,10 @@
 </head>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <div id="moneyLine">
-  <div id="getInfo8">
     <select id="moneyLineDD"></select>
-  </div>
 </div>
 <script>
-data=[
+centLineData=[
 {"Cent Line": 20,"Fav": -110,"Dog": -110,"Fav Percent": "52.38%","Dog Percent": "52.38%","Ovrnd": "104.76%"},
 {"Cent Line": 20,"Fav": -115,"Dog": -105,"Fav Percent": "53.49%","Dog Percent": "51.22%","Ovrnd": "104.71%"},
 {"Cent Line": 20,"Fav": -120,"Dog": +100,"Fav Percent": "54.55%","Dog Percent": "50.00%","Ovrnd": "104.55%"},
@@ -249,6 +247,35 @@ data=[
 {"Cent Line": 40,"Fav": -3000,"Dog": +1200,"Fav Percent": "96.77%","Dog Percent": "7.69%","Ovrnd": "104.47%"},
 {"Cent Line": 40,"Fav": -4000,"Dog": +1400,"Fav Percent": "97.56%","Dog Percent": "6.67%","Ovrnd": "104.23%"},
 {"Cent Line": 40,"Fav": -5000,"Dog": +1600,"Fav Percent": "98.04%","Dog Percent": "5.88%","Ovrnd": "103.92%"}]
+spread_v_ML_Data=[
+  {"Spread":0,"ML":-110},
+  {"Spread":-1,"ML":-120},
+  {"Spread":-1.5,"ML":-130},
+  {"Spread":-2,"ML":-140},
+  {"Spread":-2.5,"ML":-150},
+  {"Spread":-3,"ML":-170},
+  {"Spread":-3.5,"ML":-200},
+  {"Spread":-4,"ML":-220},
+  {"Spread":-4.5,"ML":-240},
+  {"Spread":-5,"ML":-250},
+  {"Spread":-5.5,"ML":-260},
+  {"Spread":-6,"ML":-285},
+  {"Spread":-6.5,"ML":-310},
+  {"Spread":-7,"ML":-370},
+  {"Spread":-7.5,"ML":-450},
+  {"Spread":-8,"ML":-485},
+  {"Spread":-8.5,"ML":-525},
+  {"Spread":-9,"ML":-550},
+  {"Spread":-9.5,"ML":-565},
+  {"Spread":-10,"ML":-700},
+  {"Spread":-10.5,"ML":-900},
+  {"Spread":-11,"ML":-1050},
+  {"Spread":-11.5,"ML":-1200},
+  {"Spread":-12,"ML":-1250},
+  {"Spread":-12.5,"ML":-1300},
+  {"Spread":-13,"ML":-1450},
+  {"Spread":-13.5,"ML":-1650}
+]
 d3.select("#moneyLine")
   .style("max-width","60%")
   .style("margin-left","20%")
@@ -263,14 +290,25 @@ d3.select("#moneyLineDD")
 moneyLineDD = d3.select("#moneyLineDD")
 moneyLineDD.on("change",function(d){
   cents = d3.select("#moneyLineDD").node().value
-  d3.select("#moneyLine").select("table").remove()
+  d3.select("#moneyLine").select("#moneyLineTable").remove()
   d3.select("#moneyLine").select("h1").remove()
-  tabData=data.filter(function(d){return d["Cent Line"]==cents})
+  d3.select("#moneyLine").select("button").remove()
+  tabData=centLineData.filter(function(d){return d["Cent Line"]==cents})
   tabulateMoneyLine(cents,tabData,["Fav","Dog","Fav Percent","Dog Percent","Ovrnd"])
 })
-tabulateMoneyLine(20,data.filter(function(d){return d["Cent Line"]==20}),["Fav","Dog","Fav Percent","Dog Percent","Ovrnd"])
 
-function tabulateMoneyLine(cent,data, columns){
+tabulateMoneyLine(20,centLineData.filter(function(d){return d["Cent Line"]==20}),["Fav","Dog","Fav Percent","Dog Percent","Ovrnd"])
+
+function tabulateMoneyLine(cent,centLineData, columns){
+  d3.select("#moneyLine").append("button")
+    .text("Spread vs ML")
+    .on("click",function(){
+      d3.select("#moneyLine").select("#moneyLineTable").remove()
+      d3.select("#moneyLine").select("#moneyLineDD").style("display","none")
+      d3.select("#moneyLine").select("h1").remove()
+      d3.select("#moneyLine").select("button").remove()
+      tabulateSpread_ML(spread_v_ML_Data,["Spread","ML"])
+    })
   title=d3.select("#moneyLine").append("h1")
     .text(cent+" Cent Line")
     .style("text-decoration","underline")
@@ -282,6 +320,7 @@ function tabulateMoneyLine(cent,data, columns){
     .style("text-transform","uppercase")
     .style("letter-spacing","1px")
   var table = d3.select('#moneyLine').append('table')
+                .attr("id","moneyLineTable")
                 .style("border","1px solid #b7b7b7")
                 .style("border-collapse","collapse")
                 .style("table-layout","fixed")
@@ -310,7 +349,89 @@ function tabulateMoneyLine(cent,data, columns){
     thead.style("cursor","pointer")
   })
   var rows = tbody.selectAll('tr')
-    .data(data)
+    .data(centLineData)
+    .enter()
+    .append('tr')
+  var cells = rows.selectAll('td')
+    .data(function (row) {
+      return columns.map(function (column) {
+        return {column: column, value: row[column]};
+      });
+    })
+    .enter()
+    .append('td')
+    .text(function (d) { return d.value; })
+    .attr("class",function(d){
+      return d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_");
+    })
+    .style("padding","1px 5px")
+    .style("border-top","1px solid #b7b7b7")
+    .style("text-align","center")
+    .style("font-family", "Open Sans,sans-serif")
+    .style("font-size","16px")
+    .style("font-weight","400")
+    .style("color","#555555")
+  cells.on("mouseover",function(d){
+      d3.select(this.parentNode).selectAll("td").style("background-color","#c9e9c9") // Change background-color of row to yellow
+      d3.selectAll("."+d["column"].split(" ").join("").replace(new RegExp('/', 'g'),"_")).style("background-color","#c9e9c9") //Change background-color of column to yellow
+      d3.select(this).style("background-color","#e9c9c9")
+    })
+    .on("mouseleave",function(d){
+      d3.selectAll("td").style("background-color","white")
+    })
+}
+function tabulateSpread_ML(spread_ML_data, columns){
+  d3.select("#moneyLine").append("button")
+    .text("Cent Line")
+    .on("click",function(){
+      d3.select("#moneyLine").select("#spread_ML_Table").remove()
+      d3.select("#moneyLine").select("#moneyLineDD").style("display","inline")
+      d3.select("#moneyLine").select("h1").remove()
+      d3.select("#moneyLine").select("button").remove()
+      cents = d3.select("#moneyLineDD").node().value
+      tabulateMoneyLine(cents,centLineData.filter(function(d){return d["Cent Line"]==20}),["Fav","Dog","Fav Percent","Dog Percent","Ovrnd"])
+    })
+  title=d3.select("#moneyLine").append("h1")
+    .text("Spread VS Money Line")
+    .style("text-decoration","underline")
+    .style("text-align","center")
+    .style("font-family", "Roboto Condensed, sans-serif")
+    .style("font-weight","700")
+    .style("font-size","32px")
+    .style("color","#282828")
+    .style("text-transform","uppercase")
+    .style("letter-spacing","1px")
+  var table = d3.select('#moneyLine').append('table')
+                .attr("id","spread_ML_Table")
+                .style("border","1px solid #b7b7b7")
+                .style("border-collapse","collapse")
+                .style("table-layout","fixed")
+                .style("width","40%")
+                .style("margin-left","30%")
+  var thead = table.append('thead')
+  var	tbody = table.append('tbody');
+  th = thead.append('tr')
+            .selectAll('th')
+            .data(columns)
+            .enter()
+            .append('th')
+            .style("padding","4px 8px")
+            .style("border-top","1px solid #b7b7b7")
+            .style("word-wrap","break-word")
+            .style("font-size","15px")
+            .append("a")
+            .attr("class","sort-by")
+            .text(function (column){
+              return column;
+            })
+            .attr("id",function(column){
+              return column;
+            })
+  th.on("mouseenter",function(){
+    thead.style("cursor","pointer")
+  })
+  var rows = tbody.selectAll('tr')
+    .data(spread_ML_data)
     .enter()
     .append('tr')
   var cells = rows.selectAll('td')
