@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>CMAS/COSAT Results</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<div id="getInfo"></div>
+<div id="cmasGraph"></div>
+<div id="cmasTable"></div>
+<script>
+d3.csv("data/CMAS.csv",function(error,data){
+
+  data=data.filter(function(d){
+    return (d["MGP (2017)"]!="")&&(d["MGP (2018)"]!="")
+  })
+  d3.select("#getInfo")
+    .append("select")
+    .attr("id","schoolsDD")
+  d3.select("#getInfo")
+    .append("select")
+    .attr("id","subjectsDD")
+  d3.select("#getInfo")
+    .append("select")
+    .attr("id","fgcDD")
+  d3.select("#getInfo")
+    .append("select")
+    .attr("id","fgDD")
+
+  schoolDict={
+    "Cheltenham Elementary School":"Elementary",
+    "College View Elementary School":"Elementary",
+    "Trevista at Horace Mann":"Elementary",
+    "Valverde Elementary School":"Elementary",
+    "Hill Campus of Arts and Sciences":"Middle",
+    "Skinner Middle School":"Middle",
+    "North High School":"High"
+}
+  schools=["Cheltenham Elementary School","College View Elementary School","Trevista at Horace Mann","Valverde Elementary School","Hill Campus of Arts and Sciences","Skinner Middle School","North High School"]
+  schoolsDD=d3.select("#schoolsDD")
+  schoolsDD.selectAll("option")
+       .data(schools)
+       .enter()
+       .append("option")
+       .attr("value",function(d){
+         return d;
+       })
+       .text(function(d){
+         return d;
+       })
+  subjects=["ELA","Math"]
+  subjectsDD=d3.select("#subjectsDD")
+  subjectsDD.selectAll("option")
+       .data(subjects)
+       .enter()
+       .append("option")
+       .attr("value",function(d){
+         return d;
+       })
+       .text(function(d){
+         return d;
+       })
+  selected_school=schoolsDD.property("value")
+  selected_subject=subjectsDD.property("value")
+  filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)})
+  filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)})
+
+  fgc=[]
+  for (var i=0;i<filtered.length;i++){
+    if (!fgc.includes(filtered[i]["Focus Group Category"])){
+      fgc.push(filtered[i]["Focus Group Category"])
+    }
+  }
+  fgcDD=d3.select("#fgcDD")
+  fgcDD.selectAll("option")
+       .data(fgc)
+       .enter()
+       .append("option")
+       .attr("value",function(d){
+         return d;
+       })
+       .text(function(d){
+         return d;
+       })
+  selected_fgc=fgcDD.property("value")
+  filtered=filtered.filter(function(d){return (d["Focus Group Category"]==selected_fgc)})
+  filtered2=filtered2.filter(function(d){return (d["Focus Group Category"]==selected_fgc)})
+
+  fg=[]
+  for (var i=0;i<filtered.length;i++){
+    if (!fg.includes(filtered[i]["Focus Group"])){
+      fg.push(filtered[i]["Focus Group"])
+    }
+  }
+  fgDD=d3.select("#fgDD")
+  fgDD.selectAll("option")
+       .data(fg)
+       .enter()
+       .append("option")
+       .attr("value",function(d){
+         return d;
+       })
+       .text(function(d){
+         return d;
+       })
+  selected_fg=fgcDD.property("value")
+  filtered=filtered.filter(function(d){return (d["Focus Group Category"]==selected_fg)})
+  filtered2=filtered2.filter(function(d){return (d["Focus Group Category"]==selected_fg)})
+  make_graph(filtered,filtered2)
+  d3.select("#schoolsDD").on("change",function(){
+    selected_school=schoolsDD.property("value")
+    selected_subject=subjectsDD.property("value")
+    selected_fgc=fgcDD.property("value")
+    selected_fg=fgDD.property("value")
+    update_DropDowns(selected_school,selected_subject,selected_fgc)
+    if(selected_fgc=="Overall"){
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]=="Ed Level")&&(d["Focus Group"]==schoolDict[selected_school])})
+    }
+    else{
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+    }
+    make_graph(filtered,filtered2)
+  })
+  d3.select("#subjectsDD").on("change",function(){
+    selected_school=schoolsDD.property("value")
+    selected_subject=subjectsDD.property("value")
+    selected_fgc=fgcDD.property("value")
+    selected_fg=fgDD.property("value")
+    update_DropDowns(selected_school,selected_subject,selected_fgc)
+    if(selected_fgc=="Overall"){
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]=="Ed Level")&&(d["Focus Group"]==schoolDict[selected_school])})
+    }
+    else{
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+    }
+    make_graph(filtered,filtered2)
+  })
+  d3.select("#fgcDD").on("change",function(){
+    selected_school=schoolsDD.property("value")
+    selected_subject=subjectsDD.property("value")
+    selected_fgc=fgcDD.property("value")
+    selected_fg=fgDD.property("value")
+    update_last_DropDown(selected_fgc)
+    if(selected_fgc=="Overall"){
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]=="Ed Level")&&(d["Focus Group"]==schoolDict[selected_school])})
+    }
+    else{
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+    }
+    make_graph(filtered,filtered2)
+  })
+  fgDD.on("change",function(){
+    selected_school=schoolsDD.property("value")
+    selected_subject=subjectsDD.property("value")
+    selected_fgc=fgcDD.property("value")
+    selected_fg=fgDD.property("value")
+    if(selected_fgc=="Overall"){
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]=="Ed Level")&&(d["Focus Group"]==schoolDict[selected_school])})
+    }
+    else{
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+    }
+    make_graph(filtered,filtered2)
+  })
+
+  function update_DropDowns(school,subject){
+    d3.select("#fgcDD").remove()
+    d3.select("#fgDD").remove()
+    d3.select("#getInfo")
+      .append("select")
+      .attr("id","fgcDD")
+    d3.select("#getInfo")
+      .append("select")
+      .attr("id","fgDD")
+    filtered=data.filter(function(d){return (d["School Name"]==school)&&(d["Skill Name"]==subject)})
+
+    fgc=[]
+    for (var i=0;i<filtered.length;i++){
+      if (!fgc.includes(filtered[i]["Focus Group Category"])){
+        fgc.push(filtered[i]["Focus Group Category"])
+      }
+    }
+    fgcDD=d3.select("#fgcDD")
+    fgcDD.selectAll("option")
+         .data(fgc)
+         .enter()
+         .append("option")
+         .attr("value",function(d){
+           return d;
+         })
+         .text(function(d){
+           return d;
+         })
+    selected_fgc=fgcDD.property("value")
+    filtered=filtered.filter(function(d){return (d["Focus Group Category"]==selected_fgc)})
+
+    fg=[]
+    for (var i=0;i<filtered.length;i++){
+      if (!fg.includes(filtered[i]["Focus Group"])){
+        fg.push(filtered[i]["Focus Group"])
+      }
+    }
+    fgDD=d3.select("#fgDD")
+    fgDD.selectAll("option")
+         .data(fg)
+         .enter()
+         .append("option")
+         .attr("value",function(d){
+           return d;
+         })
+         .text(function(d){
+           return d;
+         })
+    selected_fg=fgDD.property("value")
+    filtered=filtered.filter(function(d){return (d["Focus Group"]==selected_fg)})
+    d3.select("#fgcDD").on("change",function(){
+        selected_school=schoolsDD.property("value")
+        selected_subject=subjectsDD.property("value")
+        selected_fgc=fgcDD.property("value")
+        selected_fg=fgDD.property("value")
+        update_last_DropDown(selected_fgc)
+        if(selected_fgc=="Overall"){
+          filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+          filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]=="Ed Level")&&(d["Focus Group"]==schoolDict[selected_school])})
+        }
+        else{
+          filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+          filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+        }
+        make_graph(filtered,filtered2)
+      })
+    fgDD.on("change",function(){
+      selected_school=schoolsDD.property("value")
+      selected_subject=subjectsDD.property("value")
+      selected_fgc=fgcDD.property("value")
+      selected_fg=fgDD.property("value")
+      if(selected_fgc=="Overall"){
+        filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+        filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]=="Ed Level")&&(d["Focus Group"]==schoolDict[selected_school])})
+      }
+      else{
+        filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+        filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      }
+      make_graph(filtered,filtered2)
+    })
+  }
+
+  function update_last_DropDown(fgc){
+    d3.select("#fgDD").remove()
+    d3.select("#getInfo")
+      .append("select")
+      .attr("id","fgDD")
+    filtered=data.filter(function(d){return (d["School Name"]==schoolsDD.property("value"))&&(d["Skill Name"]==subjectsDD.property("value"))&&(d["Focus Group Category"]==fgc)})
+    fg=[]
+    for (var i=0;i<filtered.length;i++){
+      if (!fg.includes(filtered[i]["Focus Group"])){
+        fg.push(filtered[i]["Focus Group"])
+      }
+    }
+    fgDD=d3.select("#fgDD")
+    fgDD.selectAll("option")
+         .data(fg)
+         .enter()
+         .append("option")
+         .attr("value",function(d){
+           return d;
+         })
+         .text(function(d){
+           return d;
+         })
+    selected_fg=fgDD.property("value")
+    filtered=filtered.filter(function(d){return (d["Focus Group"]==selected_fg)})
+    fgDD.on("change",function(){
+      selected_school=schoolsDD.property("value")
+      selected_subject=subjectsDD.property("value")
+      selected_fgc=fgcDD.property("value")
+      selected_fg=fgDD.property("value")
+      filtered=data.filter(function(d){return (d["School Name"]==selected_school)&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      filtered2=data.filter(function(d){return (d["School Name"]=="All Schools")&&(d["Skill Name"]==selected_subject)&&(d["Focus Group Category"]==selected_fgc)&&(d["Focus Group"]==selected_fg)})
+      make_graph(filtered,filtered2)
+    })
+  }
+
+  function make_graph(graph_data,graph_data_2){
+    d3.selectAll("svg").remove()
+    final_data=[]
+    for (var i=2017;i<=2018;i++){
+      final_data.push({"Year":i,"Score":+graph_data[0]["MGP ("+i+")"]})
+    }
+    final_data_2=[]
+    for (var i=2017;i<=2018;i++){
+      final_data_2.push({"Year":i,"Score":+graph_data_2[0]["MGP ("+i+")"]})
+    }
+    var width=800,
+        height=800,
+        marginL=100,
+        marginT=100,
+        marginR=100,
+        marginB=100,
+        schoolColor="green",
+        allColor="blue";
+    svg=d3.select("#cmasGraph")
+      .append("svg")
+      .attr("width",width)
+      .attr("height",height)
+      .style("background-color","#cdefff")
+    title=svg.append("text")
+      .attr("text-anchor","middle")
+      .attr("x",(marginL+width-marginR)/2)
+      .attr("y",(marginT/2))
+      .style("font-weight","bold")
+      .style("font-size","2pc")
+      .text(selected_school+" ("+selected_subject+")")
+    xlabel=svg.append("text")
+      .attr("text-anchor","middle")
+      .attr("x",(marginL+width-marginR)/2)
+      .attr("y",(2*height-marginB)/2)
+      .style("font-size","1.3pc")
+      .style("font-weight","bold")
+      .text("Year")
+    xlabel=svg.append("text")
+      .attr("text-anchor","middle")
+      .attr("transform","translate("+(marginL/2)+","+(marginT+height-marginB)/2+")rotate(270)")
+      .style("font-size","1.3pc")
+      .style("font-weight","bold")
+      .text("MGP")
+    schoolCircle=svg.append("circle")
+      .attr("cx",width-160)
+      .attr("cy",marginT)
+      .attr("r",8)
+      .style("fill",schoolColor)
+    schoolText=svg.append("text")
+      .attr("x",width-145)
+      .attr("y",marginT+6)
+      .text("Selected School")
+      .style("fill",schoolColor)
+      .style("font-size","1.2pc")
+    allCircle=svg.append("circle")
+      .attr("cx",width-160)
+      .attr("cy",marginT+40)
+      .attr("r",8)
+      .style("fill",allColor)
+    allText=svg.append("text")
+      .attr("x",width-145)
+      .attr("y",marginT+46)
+      .text("District")
+      .style("fill",allColor)
+      .style("font-size","1.2pc")
+
+
+    var xscale = d3.scaleLinear()
+       .domain([2016.5,2018.5])
+       .range([0+marginL, width-marginR]);
+    var x_axis = d3.axisBottom()
+                  .scale(xscale)
+                  .tickValues([2017,2018])
+                  .tickFormat(d3.format('.0f'));
+    svg.append("g")
+            .attr("transform", "translate(0,"+(height-marginB)+")")
+            .attr("id","xAxis")
+            .style("font-size","1pc")
+            .style("font-family","Courier")
+            .call(x_axis)
+    var yscale = d3.scaleLinear()
+       .domain([0,100])
+       .range([height-marginB,0+marginT]);
+    var y_axis = d3.axisLeft()
+                  .scale(yscale)
+                  // .tickValues([0,1,2,3,4,5,6,7,8,9,10,11,12])
+                  .tickFormat(d3.format('.0f'));;
+    svg.append("g")
+            .attr("transform", "translate("+marginL+",0)")
+            .attr("id","yAxis")
+            .style("font-size","1pc")
+            .style("font-family","Courier")
+            .call(y_axis)
+    mgp=svg.append("text")
+      .attr("id","mgpText")
+      .style("font-size","1.4pc")
+
+    first_lineFunction = d3.line()
+                  .x(function(d) { return xscale(d["Year"]); })
+                  .y(function(d) {
+                    return yscale(d["Score"]);
+                  })
+    first_lines = svg.append("path")
+                  .attr("id","line1")
+                  .attr("class","first line")
+                  .attr("d",first_lineFunction(final_data))
+                  .attr("stroke", schoolColor)
+                  .attr("stroke-width", 2)
+                  .attr("fill", "none")
+    var totalLength = first_lines.node().getTotalLength();
+    first_lines.attr("stroke-dasharray", totalLength + " " + totalLength)
+              .attr("stroke-dashoffset", totalLength)
+              .transition()
+                .duration(300)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+    first_circles=svg.selectAll(".first circles")
+      .data(final_data)
+      .enter()
+      .append("circle")
+      .attr("class","first circles")
+      .attr("cx",function(d){
+        return xscale(d["Year"])
+      })
+      .attr("cy",function(d){
+        return yscale(d["Score"])
+      })
+      .attr("r",8)
+      .style("fill",schoolColor)
+
+
+
+    second_lineFunction = d3.line()
+                  .x(function(d) { return xscale(d["Year"]); })
+                  .y(function(d) { return yscale(d["Score"]);})
+    second_lines = svg.append("path")
+                  .attr("id","line2")
+                  .attr("class","second line")
+                  .attr("d",second_lineFunction(final_data_2))
+                  .attr("stroke", allColor)
+                  .attr("stroke-width", 2)
+                  .attr("fill", "none")
+    var totalLength = second_lines.node().getTotalLength();
+    second_lines.attr("stroke-dasharray", totalLength + " " + totalLength)
+              .attr("stroke-dashoffset", totalLength)
+              .transition()
+                .duration(300)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+    second_circles=svg.selectAll(".second circles")
+      .data(final_data_2)
+      .enter()
+      .append("circle")
+      .attr("class","second circles")
+      .attr("cx",function(d){
+        return xscale(d["Year"])
+      })
+      .attr("cy",function(d){
+        return yscale(d["Score"])
+      })
+      .attr("r",8)
+      .style("fill",allColor)
+
+  svg.selectAll(".circles")
+    .on("mouseenter",function(){
+      svg.selectAll(".circles")
+        .style("opacity",.2)
+      svg.selectAll(".line")
+        .style("opacity",.2)
+      d3.select(this).style("opacity",1)
+    })
+    .on("mousemove",function(d){
+      x=+d3.mouse(this)[0]
+      y=+d3.mouse(this)[1]
+      mgp.attr("x",x+7)
+        .attr("y",y-7)
+        .text(function(){
+          return "Score: "+d["Score"]
+        })
+    })
+    .on("mouseleave",function(){
+      svg.select("#ref-line").remove()
+      svg.selectAll(".circles")
+        .style("opacity",1)
+      svg.selectAll(".line")
+        .style("opacity",1)
+      mgp.text("")
+    })
+  }
+})
+</script>
+</html>
